@@ -1,118 +1,221 @@
-import Image from 'next/image'
-import { Inter } from 'next/font/google'
+import React, { useState, useRef } from 'react';
+import Compressor from 'compressorjs';
+import Cropper from 'cropperjs';
 
-const inter = Inter({ subsets: ['latin'] })
+import 'cropperjs/dist/cropper.css';
 
-export default function Home() {
+const ImageUpload: React.FC = () => {
+  const [originalImage, setOriginalImage] = useState<File | null>(null);
+  const [compressedImage, setCompressedImage] = useState<File | null>(null);
+  const [conversionImage, setConversionImage] = useState<File | null>(null);
+  const [compressionPercentage, setCompressionPercentage] = useState<number>(0);
+
+  const [cropImage, setCropImage] = useState(false);
+  const [croppedImage, setCroppedImage] = useState<string | null>(null);
+  const inputRef = useRef<HTMLInputElement | null>(null);
+  const cropperRef = useRef<Cropper | null>(null);
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+
+    if (file instanceof File) {
+      setOriginalImage(file);
+      setCompressedImage(null);
+      setConversionImage(null);
+      setCompressionPercentage(0);
+      setCroppedImage(null);
+    }
+  };
+
+  const handleConvertToWebP = async () => {
+    if (originalImage) {
+      try {
+        const convertedFile = await convertToWebP(originalImage);
+        setConversionImage(convertedFile);
+      } catch (error) {
+        console.error('Error al convertir la imagen a WebP:', error);
+      }
+    }
+  };
+
+  const handleCrop = () => {
+    if (cropperRef.current) {
+      const croppedCanvas = cropperRef.current.getCroppedCanvas();
+      setCroppedImage(croppedCanvas.toDataURL());
+    }
+  };
+
+  const handleCompress = async () => {
+    if (originalImage || conversionImage) {
+      try {
+        const imageToCompress = conversionImage || originalImage;
+
+        if (imageToCompress) {
+          let croppedFile = imageToCompress;
+
+          if (croppedImage) {
+            croppedFile = await convertDataUrlToFile(croppedImage, imageToCompress.type);
+          }
+
+          const compressedFile = await compressImage(croppedFile);
+          setCompressedImage(compressedFile);
+
+          const reductionPercentage = calculateReductionPercentage(
+            croppedFile.size,
+            compressedFile.size
+          );
+          setCompressionPercentage(reductionPercentage);
+        }
+      } catch (error) {
+        console.error('Error al comprimir la imagen:', error);
+      }
+    }
+  };
+
+  const convertDataUrlToFile = (dataUrl: string, fileType: string) => {
+    return fetch(dataUrl)
+      .then((res) => res.blob())
+      .then((blob) => new File([blob], `cropped_${originalImage?.name}`, { type: fileType }));
+  };
+
+  const compressImage = (file: File) => {
+    return new Promise<File>((resolve, reject) => {
+      new Compressor(file, {
+        quality: 0.45,
+        success: (result: File) => {
+          resolve(result);
+        },
+        error: (error) => {
+          reject(error);
+        },
+      });
+    });
+  };
+
+  const convertToWebP = (file: File) => {
+    return new Promise<File>((resolve, reject) => {
+      const reader = new FileReader();
+
+      reader.onload = () => {
+        const img = new Image();
+
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          canvas.width = img.width;
+          canvas.height = img.height;
+
+          const ctx = canvas.getContext('2d');
+          ctx?.drawImage(img, 0, 0, img.width, img.height);
+
+          canvas.toBlob(
+            (blob) => {
+              if (blob) {
+                const convertedFile = new File([blob], `converted_${file.name}`, {
+                  type: 'image/webp',
+                  lastModified: Date.now(),
+                });
+                resolve(convertedFile);
+              } else {
+                reject(new Error('Error al generar el blob convertido.'));
+              }
+            },
+            'image/webp',
+            1
+          );
+        };
+
+        img.src = reader.result as string;
+      };
+
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const calculateReductionPercentage = (originalSize: number, compressedSize: number) => {
+    return ((originalSize - compressedSize) / originalSize) * 100;
+  };
+
+  const handleDownload = () => {
+    if (compressedImage) {
+      const downloadLink = document.createElement('a');
+      downloadLink.href = URL.createObjectURL(compressedImage);
+      downloadLink.download = `compressed_${compressedImage.name}`;
+      downloadLink.click();
+    }
+  };
+
+  const handleCropButtonClick = () => {
+    if (originalImage && cropperRef.current) {
+      cropperRef.current.replace(URL.createObjectURL(originalImage));
+      setCroppedImage(null);
+      setCompressedImage(null);
+      setConversionImage(null);
+      setCompressionPercentage(0);
+    }
+  };
+
   return (
-    <main
-      className={`flex min-h-screen flex-col items-center justify-between p-24 ${inter.className}`}
-    >
-      <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">src/pages/index.tsx</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
+    <div className="mt-20">
+      <input type="file" onChange={handleFileChange} ref={inputRef} />
+      {originalImage && (
+        <div>
+          <p>Nombre original de la imagen: {originalImage.name}</p>
+          <p>Peso actual de la imagen: {(originalImage.size / 1024 / 1024).toFixed(2)} MB</p>
         </div>
-      </div>
+      )}
+      {originalImage && !conversionImage && !compressedImage && !croppedImage && (
+        <div>
+          <button onClick={() => setCropImage(true)}>Recortar imagen</button>
+          <button onClick={handleConvertToWebP}>Convertir a WebP</button>
+          <button onClick={handleCompress}>Comprimir imagen</button>
+        </div>
+      )}
+      {croppedImage && (
+        < div className='w-96 h-96'>
+          <img src={croppedImage} alt="Cropped" style={{ maxWidth: '100%' }} />
 
-      <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700/10 after:dark:from-sky-900 after:dark:via-[#0141ff]/40 before:lg:h-[360px]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
+          <div className='flex justify-between'>
+            <button onClick={handleCropButtonClick}>Crop</button>
+            <button onClick={handleConvertToWebP}>Convert To WebP</button>
+            <button onClick={handleCompress}>Compress</button>
+          </div>
+        </div>
+      )}
+      {conversionImage && (
+        <div>
+          <p>Imagen convertida a WebP</p>
+          <p>Peso actual de la imagen: {(conversionImage.size / 1024 / 1024).toFixed(2)} MB</p>
+          <button onClick={handleCompress}>Comprimir imagen convertida</button>
+        </div>
+      )}
+      {compressedImage && (
+        <div>
+          <p>Peso comprimido de la imagen: {(compressedImage.size / 1024 / 1024).toFixed(2)} MB</p>
+          <p>Porcentaje de reducción de peso: {Math.round(compressionPercentage)}%</p>
+          <button onClick={handleDownload}>Descargar imagen comprimida</button>
+        </div>
+      )}
+      {originalImage && !croppedImage && cropImage && (
+        <div className='w-96 h-96'>
+          <img
+            ref={(node) => {
+              if (node) {
+                cropperRef.current = new Cropper(node, {
+                  aspectRatio: 0,
+                  viewMode: 0,
+                  zoomable: false, // Desactivar opción de hacer zoom
+                });
+              }
+            }}
+            src={URL.createObjectURL(originalImage)}
+            alt="Original"
+            style={{ maxWidth: '100%' }}
+          />
+          <button onClick={handleCrop}>Guardar recorte</button>
+        </div>
+      )}
+    </div>
+  );
+};
 
-      <div className="mb-32 grid text-center lg:mb-0 lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Docs{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Learn{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Templates{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Discover and deploy boilerplate example Next.js&nbsp;projects.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Deploy{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  )
-}
+export default ImageUpload;
