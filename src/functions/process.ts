@@ -77,10 +77,10 @@ export default function Process() {
   };
 
 
-  const convertDataUrlToFile = async (dataUrl: string, fileType: string, originalImage: File | null) => {
+  const convertDataUrlToFile = async (dataUrl: string, fileType: string, originalFile: File | null) => {
     const response = await fetch(dataUrl);
     const blob = await response.blob();
-    return new File([blob], `cropped_${originalImage?.name}`, { type: fileType });
+    return new File([blob], `cropped_${originalFile?.name}`, { type: fileType });
   };
 
 

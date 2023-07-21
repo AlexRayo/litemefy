@@ -10,15 +10,15 @@ import { scaleImage } from '@/utils/scaleImage';
 
 const ImageUpload: React.FC = () => {
   const {
-    originalImage,
-    compressedImage,
-    convertedImage,
+    originalFile,
+    compressedFile,
+    convertedFile,
     compressionPercentage,
     cropImage,
-    editedImage,
+    editedImageUrlData,
     inputRef,
     cropperRef,
-    setEditedImage,
+    seteditedImageUrlData,
     setCropImage,
     setPngTransparency
   } = React.useContext(AppContext);
@@ -37,16 +37,16 @@ const ImageUpload: React.FC = () => {
   const [scaleValue, setScaleValue] = useState(1);
 
   const handleImageScale = async (scale: number) => {
-    if (originalImage) {
+    if (originalFile) {
       setScaleValue(scale)
       try {
-        const scaledData = await scaleImage(originalImage, scale);
+        const scaledData = await scaleImage(originalFile, scale);
         // Obtenemos la URL de datos de la imagen escalada
         const scaledDataURL = scaledData.scaledDataURL;
 
         // Aquí puedes hacer lo que necesites con la URL de datos de la imagen escalada
         console.log('URL de datos de la imagen escalada:', scaledDataURL);
-        setEditedImage(scaledDataURL)
+        seteditedImageUrlData(scaledDataURL)
       } catch (error) {
         console.error('Error al escalar la imagen:', error);
       }
@@ -56,22 +56,22 @@ const ImageUpload: React.FC = () => {
   return (
     <div className="mt-20">
       <input type="file" onChange={handleFileChange} ref={inputRef} />
-      {originalImage && (
+      {originalFile && (
         <div>
-          <p>Nombre original de la imagen: {originalImage.name}</p>
-          <p>Peso actual de la imagen: {(originalImage.size / 1024 / 1024).toFixed(2)} MB</p>
+          <p>Nombre original de la imagen: {originalFile.name}</p>
+          <p>Peso actual de la imagen: {(originalFile.size / 1024 / 1024).toFixed(2)} MB</p>
         </div>
       )}
-      {originalImage && !convertedImage && !compressedImage && !editedImage && (
+      {originalFile && !convertedFile && !compressedFile && !editedImageUrlData && (
         <div>
           <button onClick={() => setCropImage(true)}>Recortar imagen</button>
           <button onClick={handleConvertToWebP}>To WebP</button>
           <button onClick={handleCompress}>Comprimir imagen</button>
         </div>
       )}
-      {editedImage && (
+      {editedImageUrlData && (
         < div className='max-h-3.5'>
-          <img src={editedImage} alt="Cropped" style={{ maxWidth: '100%' }} />
+          <img src={editedImageUrlData} alt="Cropped" style={{ maxWidth: '100%' }} />
 
           <div className='flex justify-between'>
             <button onClick={startCrop}>Crop</button>
@@ -80,21 +80,21 @@ const ImageUpload: React.FC = () => {
           </div>
         </div>
       )}
-      {convertedImage && (
+      {convertedFile && (
         <div>
           <p>Imagen convertida a WebP</p>
-          <p>Peso actual de la imagen: {(convertedImage.size / 1024 / 1024).toFixed(2)} MB</p>
+          <p>Peso actual de la imagen: {(convertedFile.size / 1024 / 1024).toFixed(2)} MB</p>
           <button onClick={handleCompress}>Comprimir imagen convertida</button>
         </div>
       )}
-      {compressedImage && (
+      {compressedFile && (
         <div>
-          <p>Peso comprimido de la imagen: {Math.round(compressedImage.size / 1024)} KB</p>
+          <p>Peso comprimido de la imagen: {Math.round(compressedFile.size / 1024)} KB</p>
           <p>Porcentaje de reducción de peso: {Math.round(compressionPercentage)}%</p>
           <button onClick={handleDownload}>Descargar imagen comprimida</button>
         </div>
       )}
-      {originalImage && cropImage && (
+      {originalFile && cropImage && (
         <div className='w-96 h-96'>
           <img
             ref={(node) => {
@@ -107,7 +107,7 @@ const ImageUpload: React.FC = () => {
 
               }
             }}
-            src={URL.createObjectURL(originalImage)}
+            src={URL.createObjectURL(originalFile)}
             alt="Original"
             style={{ maxWidth: '100%' }}
           />

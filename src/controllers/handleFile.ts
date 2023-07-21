@@ -4,16 +4,16 @@ import Process from '@/functions/process';
 
 export default function imageUpload() {
   const {
-    originalImage,
-    compressedImage,
-    convertedImage,
-    editedImage,
+    originalFile,
+    compressedFile,
+    convertedFile,
+    editedImageUrlData,
     cropperRef,
-    setOriginalImage,
-    setCompressedImage,
-    setconvertedImage,
+    setoriginalFile,
+    setcompressedFile,
+    setconvertedFile,
     setCompressionPercentage,
-    setEditedImage,
+    seteditedImageUrlData,
   } = React.useContext(AppContext);
 
   const {
@@ -27,22 +27,22 @@ export default function imageUpload() {
     const file = e.target.files?.[0];
 
     if (file instanceof File) {
-      setOriginalImage(file);
-      setCompressedImage(null);
-      setconvertedImage(null);
+      setoriginalFile(file);
+      setcompressedFile(null);
+      setconvertedFile(null);
       setCompressionPercentage(0);
-      setEditedImage(null);
+      seteditedImageUrlData('');
     }
   };
 
 
   //user can compress image when is loaded or converted to webp
-  //originalImage || convertedImage, can contain a file type
+  //originalFile || convertedFile, can contain a file type
   const handleCompress = async () => {
-    console.log("convertedImage: ", convertedImage)
-    let imageToCompress = originalImage;
-    if (convertedImage) {
-      imageToCompress = convertedImage;
+    console.log("convertedFile: ", convertedFile)
+    let imageToCompress = originalFile;
+    if (convertedFile) {
+      imageToCompress = convertedFile;
     }
 
     try {
@@ -51,13 +51,13 @@ export default function imageUpload() {
         let editedFile = imageToCompress;
 
         //if image have been edited then convert the URL base64 encode Data to File
-        if (editedImage) {
-          editedFile = await convertDataUrlToFile(editedImage, imageToCompress.type, originalImage);
+        if (editedImageUrlData) {
+          editedFile = await convertDataUrlToFile(editedImageUrlData, imageToCompress.type, originalFile);
         }
 
         //get compressed image
         const compressedFile = await compressImage(editedFile);
-        setCompressedImage(compressedFile);
+        setcompressedFile(compressedFile);
 
         const reductionPercentage = calculateReductionPercentage(
           editedFile.size,
@@ -72,27 +72,21 @@ export default function imageUpload() {
 
   //
   const handleConvertToWebP = async () => {
-    if (originalImage) {
+    if (originalFile) {
       try {
 
-        const convertedFile = await convertToWebP(originalImage);
-        const compressedFile = await compressImage(convertedFile);
-        setconvertedImage(convertedFile);
-        setCompressedImage(compressedFile);
+        const convertedFile = await convertToWebP(originalFile);
+        setconvertedFile(convertedFile);
+
+        //UNCOMMENT IF YOU WANT TO AUTOMATICALLY COMPRESS FILE(NOT RECOMENDED)
+        //const compressedFile = await compressImage(convertedFile);
+        //setcompressedFile(compressedFile);
         //
-        const reductionPercentage = calculateReductionPercentage(
-          originalImage.size,
-          compressedFile.size
-        );
-        setCompressionPercentage(reductionPercentage);
-
-        // convertToWebP(originalImage).then((convertedFile) => {
-
-        //   setconvertedImage(convertedFile)
-        //   setTimeout(() => {
-        //     handleCompress();
-        //   }, 1);
-        // });
+        // const reductionPercentage = calculateReductionPercentage(
+        //   originalFile.size,
+        //   compressedFile.size
+        // );
+        // setCompressionPercentage(reductionPercentage);
 
       } catch (error) {
         console.error('Error al convertir la imagen a WebP:', error);
@@ -102,20 +96,20 @@ export default function imageUpload() {
 
   React.useEffect(() => {
     //handleCompress();
-    console.log(compressedImage)
+    console.log(compressedFile)
     return () => {
 
     }
-  }, [compressedImage])
+  }, [compressedFile])
 
 
   //
   const startCrop = () => {
-    if (originalImage && cropperRef.current) {
-      cropperRef.current.replace(URL.createObjectURL(originalImage));
-      setEditedImage(null);
-      setCompressedImage(null);
-      setconvertedImage(null);
+    if (originalFile && cropperRef.current) {
+      cropperRef.current.replace(URL.createObjectURL(originalFile));
+      seteditedImageUrlData('');
+      setcompressedFile(null);
+      setconvertedFile(null);
       setCompressionPercentage(0);
     }
   };
@@ -124,16 +118,16 @@ export default function imageUpload() {
   const saveCrop = () => {
     if (cropperRef.current) {
       const croppedCanvas = cropperRef.current.getCroppedCanvas();
-      setEditedImage(croppedCanvas.toDataURL());
+      seteditedImageUrlData(croppedCanvas.toDataURL());
     }
   };
 
   //
   const handleDownload = () => {
-    if (compressedImage) {
+    if (compressedFile) {
       const downloadLink = document.createElement('a');
-      downloadLink.href = URL.createObjectURL(compressedImage);
-      downloadLink.download = `compressed_${compressedImage.name}`;
+      downloadLink.href = URL.createObjectURL(compressedFile);
+      downloadLink.download = `compressed_${compressedFile.name}`;
       downloadLink.click();
     }
   };

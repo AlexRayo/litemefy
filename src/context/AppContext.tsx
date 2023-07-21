@@ -2,44 +2,44 @@ import React, { createContext, useState, useRef } from 'react';
 import Cropper from 'cropperjs';
 
 interface AppContextProps {
-  originalImage: File | null;
-  compressedImage: File | null;
-  convertedImage: File | null;
+  originalFile: File | null;
+  compressedFile: File | null;
+  convertedFile: File | null;
   compressionPercentage: number;
-  scaledImage: string;//save de url data base64 img
+  scaledImageUrlData: string;//save de url data base64 img
   cropImage: boolean;
-  editedImage: string | null;
+  editedImageUrlData: string;
   pngTransparency: boolean;
   inputRef: React.RefObject<HTMLInputElement>;
   cropperRef: React.MutableRefObject<Cropper | null>;
-  setOriginalImage: React.Dispatch<React.SetStateAction<File | null>>;
-  setCompressedImage: React.Dispatch<React.SetStateAction<File | null>>;
-  setconvertedImage: React.Dispatch<React.SetStateAction<File | null>>;
+  setoriginalFile: React.Dispatch<React.SetStateAction<File | null>>;
+  setcompressedFile: React.Dispatch<React.SetStateAction<File | null>>;
+  setconvertedFile: React.Dispatch<React.SetStateAction<File | null>>;
   setCompressionPercentage: React.Dispatch<React.SetStateAction<number>>;
-  setScaledImage: React.Dispatch<React.SetStateAction<string>>;
+  setscaledImageUrlData: React.Dispatch<React.SetStateAction<string>>;
   setCropImage: React.Dispatch<React.SetStateAction<boolean>>;
-  setEditedImage: React.Dispatch<React.SetStateAction<string | null>>;
+  seteditedImageUrlData: React.Dispatch<React.SetStateAction<string>>;
   setPngTransparency: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const AppContext = createContext<AppContextProps>({
-  originalImage: null,
-  compressedImage: null,
-  convertedImage: null,
+  originalFile: null,
+  compressedFile: null,
+  convertedFile: null,
   compressionPercentage: 0,
-  scaledImage: '',
+  scaledImageUrlData: '',
   cropImage: false,
-  editedImage: null,
+  editedImageUrlData: '',
   pngTransparency: false,
   inputRef: {} as React.RefObject<HTMLInputElement>,
   cropperRef: {} as React.RefObject<Cropper>,
-  setOriginalImage: () => { },
-  setCompressedImage: () => { },
-  setconvertedImage: () => { },
+  setoriginalFile: () => { },
+  setcompressedFile: () => { },
+  setconvertedFile: () => { },
   setCompressionPercentage: () => { },
-  setScaledImage: () => { },
+  setscaledImageUrlData: () => { },
   setCropImage: () => { },
-  setEditedImage: () => { },
+  seteditedImageUrlData: () => { },
   setPngTransparency: () => { },
 });
 
@@ -48,38 +48,38 @@ interface AppProviderProps {
 }
 
 export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
-  const [originalImage, setOriginalImage] = useState<File | null>(null);
-  const [compressedImage, setCompressedImage] = useState<File | null>(null);
-  const [convertedImage, setconvertedImage] = useState<File | null>(null);
+  const [originalFile, setoriginalFile] = useState<File | null>(null);
+  const [compressedFile, setcompressedFile] = useState<File | null>(null);
+  const [convertedFile, setconvertedFile] = useState<File | null>(null);
   const [compressionPercentage, setCompressionPercentage] = useState<number>(0);
 
-  const [scaledImage, setScaledImage] = useState('');
+  const [scaledImageUrlData, setscaledImageUrlData] = useState('');
   const [cropImage, setCropImage] = useState(false);
   const [pngTransparency, setPngTransparency] = useState(false);
-  const [editedImage, setEditedImage] = useState<string | null>(null);
+  const [editedImageUrlData, seteditedImageUrlData] = useState<string>('');
   const inputRef = useRef<HTMLInputElement | null>(null);
   const cropperRef = useRef<Cropper | null>(null);
 
   return (
     <AppContext.Provider
       value={{
-        originalImage,
-        compressedImage,
-        convertedImage,
+        originalFile,
+        compressedFile,
+        convertedFile,
         compressionPercentage,
-        scaledImage,
+        scaledImageUrlData,
         cropImage,
-        editedImage,
+        editedImageUrlData,
         pngTransparency,
         inputRef,
         cropperRef,
-        setOriginalImage,
-        setCompressedImage,
-        setconvertedImage,
+        setoriginalFile,
+        setcompressedFile,
+        setconvertedFile,
         setCompressionPercentage,
-        setScaledImage,
+        setscaledImageUrlData,
         setCropImage,
-        setEditedImage,
+        seteditedImageUrlData,
         setPngTransparency,
       }}
     >
