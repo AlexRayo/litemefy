@@ -4,7 +4,7 @@ import Cropper from 'cropperjs';
 interface AppContextProps {
   originalImage: File | null;
   compressedImage: File | null;
-  conversionImage: File | null;
+  convertedImage: File | null;
   compressionPercentage: number;
   scaledImage: string;//save de url data base64 img
   cropImage: boolean;
@@ -14,7 +14,7 @@ interface AppContextProps {
   cropperRef: React.MutableRefObject<Cropper | null>;
   setOriginalImage: React.Dispatch<React.SetStateAction<File | null>>;
   setCompressedImage: React.Dispatch<React.SetStateAction<File | null>>;
-  setConversionImage: React.Dispatch<React.SetStateAction<File | null>>;
+  setconvertedImage: React.Dispatch<React.SetStateAction<File | null>>;
   setCompressionPercentage: React.Dispatch<React.SetStateAction<number>>;
   setScaledImage: React.Dispatch<React.SetStateAction<string>>;
   setCropImage: React.Dispatch<React.SetStateAction<boolean>>;
@@ -25,7 +25,7 @@ interface AppContextProps {
 export const AppContext = createContext<AppContextProps>({
   originalImage: null,
   compressedImage: null,
-  conversionImage: null,
+  convertedImage: null,
   compressionPercentage: 0,
   scaledImage: '',
   cropImage: false,
@@ -35,7 +35,7 @@ export const AppContext = createContext<AppContextProps>({
   cropperRef: {} as React.RefObject<Cropper>,
   setOriginalImage: () => { },
   setCompressedImage: () => { },
-  setConversionImage: () => { },
+  setconvertedImage: () => { },
   setCompressionPercentage: () => { },
   setScaledImage: () => { },
   setCropImage: () => { },
@@ -50,7 +50,7 @@ interface AppProviderProps {
 export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   const [originalImage, setOriginalImage] = useState<File | null>(null);
   const [compressedImage, setCompressedImage] = useState<File | null>(null);
-  const [conversionImage, setConversionImage] = useState<File | null>(null);
+  const [convertedImage, setconvertedImage] = useState<File | null>(null);
   const [compressionPercentage, setCompressionPercentage] = useState<number>(0);
 
   const [scaledImage, setScaledImage] = useState('');
@@ -65,7 +65,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
       value={{
         originalImage,
         compressedImage,
-        conversionImage,
+        convertedImage,
         compressionPercentage,
         scaledImage,
         cropImage,
@@ -75,7 +75,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
         cropperRef,
         setOriginalImage,
         setCompressedImage,
-        setConversionImage,
+        setconvertedImage,
         setCompressionPercentage,
         setScaledImage,
         setCropImage,

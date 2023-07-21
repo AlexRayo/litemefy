@@ -12,7 +12,7 @@ const ImageUpload: React.FC = () => {
   const {
     originalImage,
     compressedImage,
-    conversionImage,
+    convertedImage,
     compressionPercentage,
     cropImage,
     editedImage,
@@ -62,10 +62,10 @@ const ImageUpload: React.FC = () => {
           <p>Peso actual de la imagen: {(originalImage.size / 1024 / 1024).toFixed(2)} MB</p>
         </div>
       )}
-      {originalImage && !conversionImage && !compressedImage && !editedImage && (
+      {originalImage && !convertedImage && !compressedImage && !editedImage && (
         <div>
           <button onClick={() => setCropImage(true)}>Recortar imagen</button>
-          <button onClick={handleConvertToWebP}>Convertir a WebP</button>
+          <button onClick={handleConvertToWebP}>To WebP</button>
           <button onClick={handleCompress}>Comprimir imagen</button>
         </div>
       )}
@@ -80,21 +80,21 @@ const ImageUpload: React.FC = () => {
           </div>
         </div>
       )}
-      {conversionImage && (
+      {convertedImage && (
         <div>
           <p>Imagen convertida a WebP</p>
-          <p>Peso actual de la imagen: {(conversionImage.size / 1024 / 1024).toFixed(2)} MB</p>
+          <p>Peso actual de la imagen: {(convertedImage.size / 1024 / 1024).toFixed(2)} MB</p>
           <button onClick={handleCompress}>Comprimir imagen convertida</button>
         </div>
       )}
       {compressedImage && (
         <div>
-          <p>Peso comprimido de la imagen: {(compressedImage.size / 1024 / 1024).toFixed(2)} MB</p>
+          <p>Peso comprimido de la imagen: {Math.round(compressedImage.size / 1024)} KB</p>
           <p>Porcentaje de reducción de peso: {Math.round(compressionPercentage)}%</p>
           <button onClick={handleDownload}>Descargar imagen comprimida</button>
         </div>
       )}
-      {originalImage && !editedImage && cropImage && (
+      {originalImage && cropImage && (
         <div className='w-96 h-96'>
           <img
             ref={(node) => {
@@ -120,7 +120,7 @@ const ImageUpload: React.FC = () => {
           checked={scalingMode}
           onChange={() => setScalingMode((prevMode) => !prevMode)}
         />
-        <label>Modo de edición de escala, value: {scaleValue}</label>
+        <label>Scale: {scaleValue}</label>
       </div>
       {scalingMode && (
         <div>
@@ -132,9 +132,6 @@ const ImageUpload: React.FC = () => {
             value={scaleValue}
             onChange={(e) => { handleImageScale(Number(e.target.value)) }}
           />
-          <button onClick={() => handleImageScale(scaleValue)}>
-            Aplicar escala
-          </button>
         </div>
       )}
     </div>

@@ -6,12 +6,12 @@ export default function imageUpload() {
   const {
     originalImage,
     compressedImage,
-    conversionImage,
+    convertedImage,
     editedImage,
     cropperRef,
     setOriginalImage,
     setCompressedImage,
-    setConversionImage,
+    setconvertedImage,
     setCompressionPercentage,
     setEditedImage,
   } = React.useContext(AppContext);
@@ -29,7 +29,7 @@ export default function imageUpload() {
     if (file instanceof File) {
       setOriginalImage(file);
       setCompressedImage(null);
-      setConversionImage(null);
+      setconvertedImage(null);
       setCompressionPercentage(0);
       setEditedImage(null);
     }
@@ -37,32 +37,36 @@ export default function imageUpload() {
 
 
   //user can compress image when is loaded or converted to webp
-  //originalImage || conversionImage, can contain a file type
+  //originalImage || convertedImage, can contain a file type
   const handleCompress = async () => {
-    if (originalImage || conversionImage) {
-      try {
-        const imageToCompress = conversionImage || originalImage;
+    console.log("convertedImage: ", convertedImage)
+    let imageToCompress = originalImage;
+    if (convertedImage) {
+      imageToCompress = convertedImage;
+    }
 
-        if (imageToCompress) {
-          let croppedFile = imageToCompress;
+    try {
 
-          if (editedImage) {
-            croppedFile = await convertDataUrlToFile(editedImage, imageToCompress.type, originalImage);
-          }
+      if (imageToCompress) {
+        let editedFile = imageToCompress;
 
-          //get compressed image
-          const compressedFile = await compressImage(croppedFile);
-          setCompressedImage(compressedFile);
-
-          const reductionPercentage = calculateReductionPercentage(
-            croppedFile.size,
-            compressedFile.size
-          );
-          setCompressionPercentage(reductionPercentage);
+        //if image have been edited then convert the URL base64 encode Data to File
+        if (editedImage) {
+          editedFile = await convertDataUrlToFile(editedImage, imageToCompress.type, originalImage);
         }
-      } catch (error) {
-        console.error('Error al comprimir la imagen:', error);
+
+        //get compressed image
+        const compressedFile = await compressImage(editedFile);
+        setCompressedImage(compressedFile);
+
+        const reductionPercentage = calculateReductionPercentage(
+          editedFile.size,
+          compressedFile.size
+        );
+        setCompressionPercentage(reductionPercentage);
       }
+    } catch (error) {
+      console.error('Error al comprimir la imagen:', error);
     }
   };
 
@@ -70,13 +74,40 @@ export default function imageUpload() {
   const handleConvertToWebP = async () => {
     if (originalImage) {
       try {
+
         const convertedFile = await convertToWebP(originalImage);
-        setConversionImage(convertedFile);
+        const compressedFile = await compressImage(convertedFile);
+        setconvertedImage(convertedFile);
+        setCompressedImage(compressedFile);
+        //
+        const reductionPercentage = calculateReductionPercentage(
+          originalImage.size,
+          compressedFile.size
+        );
+        setCompressionPercentage(reductionPercentage);
+
+        // convertToWebP(originalImage).then((convertedFile) => {
+
+        //   setconvertedImage(convertedFile)
+        //   setTimeout(() => {
+        //     handleCompress();
+        //   }, 1);
+        // });
+
       } catch (error) {
         console.error('Error al convertir la imagen a WebP:', error);
       }
     }
   };
+
+  React.useEffect(() => {
+    //handleCompress();
+    console.log(compressedImage)
+    return () => {
+
+    }
+  }, [compressedImage])
+
 
   //
   const startCrop = () => {
@@ -84,7 +115,7 @@ export default function imageUpload() {
       cropperRef.current.replace(URL.createObjectURL(originalImage));
       setEditedImage(null);
       setCompressedImage(null);
-      setConversionImage(null);
+      setconvertedImage(null);
       setCompressionPercentage(0);
     }
   };

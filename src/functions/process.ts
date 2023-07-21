@@ -1,3 +1,4 @@
+import React from 'react';
 import readAndCompressImage from 'browser-image-compression';
 import getExtensionType from '../utils/getExtension';
 import checkPNGTransparency from '../utils/checkPNGTransparency';
@@ -5,6 +6,7 @@ import checkPNGTransparency from '../utils/checkPNGTransparency';
 export default function Process() {
 
   const compressImage = async (file: File) => {
+
     const hasTransparency = await checkPNGTransparency(file);
     if (hasTransparency) {
       console.log('La imagen tiene transparencia.');
@@ -20,15 +22,16 @@ export default function Process() {
         maxWidthOrHeight: 1920,
         fileType: getExtensionType(file.name), // Obtener el fileType según la extensión del archivo
         onProgress: (progress: number) => {
-          console.log(`Progreso de compresión: ${progress * 100}%`);
+          console.log(`Progreso de compresión: ${progress}%`);
         },
       };
 
-      readAndCompressImage(file, options).then((compressedFile) => {
-        resolve(compressedFile);
-      }).catch((error) => {
-        reject(error);
-      });
+      readAndCompressImage(file, options)
+        .then((compressedFile) => {
+          resolve(compressedFile);
+        }).catch((error) => {
+          reject(error);
+        });
     });
   };
 
@@ -50,7 +53,9 @@ export default function Process() {
           canvas.toBlob(
             (blob) => {
               if (blob) {
-                const convertedFile = new File([blob], `converted_${file.name}`, {
+                // Cambiar la extensión del archivo a .webp
+                const newName = file.name.replace(/\.[^.]+$/, '.webp');
+                const convertedFile = new File([blob], newName, {
                   type: 'image/webp',
                   lastModified: Date.now(),
                 });
@@ -70,6 +75,7 @@ export default function Process() {
       reader.readAsDataURL(file);
     });
   };
+
 
   const convertDataUrlToFile = async (dataUrl: string, fileType: string, originalImage: File | null) => {
     const response = await fetch(dataUrl);
