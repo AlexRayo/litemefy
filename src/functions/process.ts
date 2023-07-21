@@ -15,7 +15,7 @@ export default function Process() {
       //if png suggested initialQuality: 0.05. When flat images cold be 0.2
       //if jprg suggested initialQuality: 0.8
       const options = {
-        initialQuality: 0.05,
+        initialQuality: 0.8,
         maxSizeMB: 5,
         maxWidthOrHeight: 1920,
         fileType: getExtensionType(file.name), // Obtener el fileType según la extensión del archivo

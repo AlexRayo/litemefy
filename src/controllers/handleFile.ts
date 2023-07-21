@@ -7,13 +7,13 @@ export default function imageUpload() {
     originalImage,
     compressedImage,
     conversionImage,
-    croppedImage,
+    editedImage,
     cropperRef,
     setOriginalImage,
     setCompressedImage,
     setConversionImage,
     setCompressionPercentage,
-    setCroppedImage,
+    setEditedImage,
   } = React.useContext(AppContext);
 
   const {
@@ -31,7 +31,7 @@ export default function imageUpload() {
       setCompressedImage(null);
       setConversionImage(null);
       setCompressionPercentage(0);
-      setCroppedImage(null);
+      setEditedImage(null);
     }
   };
 
@@ -46,8 +46,8 @@ export default function imageUpload() {
         if (imageToCompress) {
           let croppedFile = imageToCompress;
 
-          if (croppedImage) {
-            croppedFile = await convertDataUrlToFile(croppedImage, imageToCompress.type, originalImage);
+          if (editedImage) {
+            croppedFile = await convertDataUrlToFile(editedImage, imageToCompress.type, originalImage);
           }
 
           //get compressed image
@@ -79,10 +79,10 @@ export default function imageUpload() {
   };
 
   //
-  const handleCropButtonClick = () => {
+  const startCrop = () => {
     if (originalImage && cropperRef.current) {
       cropperRef.current.replace(URL.createObjectURL(originalImage));
-      setCroppedImage(null);
+      setEditedImage(null);
       setCompressedImage(null);
       setConversionImage(null);
       setCompressionPercentage(0);
@@ -90,10 +90,10 @@ export default function imageUpload() {
   };
 
   //
-  const handleCrop = () => {
+  const saveCrop = () => {
     if (cropperRef.current) {
       const croppedCanvas = cropperRef.current.getCroppedCanvas();
-      setCroppedImage(croppedCanvas.toDataURL());
+      setEditedImage(croppedCanvas.toDataURL());
     }
   };
 
@@ -111,8 +111,8 @@ export default function imageUpload() {
     handleFileChange,
     handleCompress,
     handleConvertToWebP,
-    handleCropButtonClick,
-    handleCrop,
+    startCrop,
+    saveCrop,
     handleDownload
   }
 }

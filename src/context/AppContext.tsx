@@ -6,16 +6,20 @@ interface AppContextProps {
   compressedImage: File | null;
   conversionImage: File | null;
   compressionPercentage: number;
+  scaledImage: string;//save de url data base64 img
   cropImage: boolean;
-  croppedImage: string | null;
+  editedImage: string | null;
+  pngTransparency: boolean;
   inputRef: React.RefObject<HTMLInputElement>;
   cropperRef: React.MutableRefObject<Cropper | null>;
   setOriginalImage: React.Dispatch<React.SetStateAction<File | null>>;
   setCompressedImage: React.Dispatch<React.SetStateAction<File | null>>;
   setConversionImage: React.Dispatch<React.SetStateAction<File | null>>;
   setCompressionPercentage: React.Dispatch<React.SetStateAction<number>>;
+  setScaledImage: React.Dispatch<React.SetStateAction<string>>;
   setCropImage: React.Dispatch<React.SetStateAction<boolean>>;
-  setCroppedImage: React.Dispatch<React.SetStateAction<string | null>>;
+  setEditedImage: React.Dispatch<React.SetStateAction<string | null>>;
+  setPngTransparency: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const AppContext = createContext<AppContextProps>({
@@ -23,16 +27,20 @@ export const AppContext = createContext<AppContextProps>({
   compressedImage: null,
   conversionImage: null,
   compressionPercentage: 0,
+  scaledImage: '',
   cropImage: false,
-  croppedImage: null,
+  editedImage: null,
+  pngTransparency: false,
   inputRef: {} as React.RefObject<HTMLInputElement>,
   cropperRef: {} as React.RefObject<Cropper>,
   setOriginalImage: () => { },
   setCompressedImage: () => { },
   setConversionImage: () => { },
   setCompressionPercentage: () => { },
+  setScaledImage: () => { },
   setCropImage: () => { },
-  setCroppedImage: () => { },
+  setEditedImage: () => { },
+  setPngTransparency: () => { },
 });
 
 interface AppProviderProps {
@@ -45,8 +53,10 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   const [conversionImage, setConversionImage] = useState<File | null>(null);
   const [compressionPercentage, setCompressionPercentage] = useState<number>(0);
 
+  const [scaledImage, setScaledImage] = useState('');
   const [cropImage, setCropImage] = useState(false);
-  const [croppedImage, setCroppedImage] = useState<string | null>(null);
+  const [pngTransparency, setPngTransparency] = useState(false);
+  const [editedImage, setEditedImage] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
   const cropperRef = useRef<Cropper | null>(null);
 
@@ -57,16 +67,20 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
         compressedImage,
         conversionImage,
         compressionPercentage,
+        scaledImage,
         cropImage,
-        croppedImage,
+        editedImage,
+        pngTransparency,
         inputRef,
         cropperRef,
         setOriginalImage,
         setCompressedImage,
         setConversionImage,
         setCompressionPercentage,
+        setScaledImage,
         setCropImage,
-        setCroppedImage,
+        setEditedImage,
+        setPngTransparency,
       }}
     >
       {children}

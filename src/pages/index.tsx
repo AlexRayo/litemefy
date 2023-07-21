@@ -1,11 +1,12 @@
-import React, { useState, useRef } from 'react';
-import Compressor from 'compressorjs';
+import React, { useState } from 'react';
 import Cropper from 'cropperjs';
 
 import 'cropperjs/dist/cropper.css';
 
 import { AppContext } from '@/context/AppContext';
 import HandleFile from '../controllers/handleFile';
+
+import { scaleImage } from '@/utils/scaleImage';
 
 const ImageUpload: React.FC = () => {
   const {
@@ -14,20 +15,43 @@ const ImageUpload: React.FC = () => {
     conversionImage,
     compressionPercentage,
     cropImage,
-    croppedImage,
+    editedImage,
     inputRef,
     cropperRef,
+    setEditedImage,
     setCropImage,
+    setPngTransparency
   } = React.useContext(AppContext);
 
   const {
     handleFileChange,
     handleCompress,
     handleConvertToWebP,
-    handleCrop,
-    handleCropButtonClick,
+    saveCrop,
+    startCrop,
     handleDownload,
   } = HandleFile();
+
+  // Estado local para almacenar el valor de escala de la imagen
+  const [scalingMode, setScalingMode] = useState(false);
+  const [scaleValue, setScaleValue] = useState(1);
+
+  const handleImageScale = async (scale: number) => {
+    if (originalImage) {
+      setScaleValue(scale)
+      try {
+        const scaledData = await scaleImage(originalImage, scale);
+        // Obtenemos la URL de datos de la imagen escalada
+        const scaledDataURL = scaledData.scaledDataURL;
+
+        // Aquí puedes hacer lo que necesites con la URL de datos de la imagen escalada
+        console.log('URL de datos de la imagen escalada:', scaledDataURL);
+        setEditedImage(scaledDataURL)
+      } catch (error) {
+        console.error('Error al escalar la imagen:', error);
+      }
+    }
+  };
 
   return (
     <div className="mt-20">
@@ -38,19 +62,19 @@ const ImageUpload: React.FC = () => {
           <p>Peso actual de la imagen: {(originalImage.size / 1024 / 1024).toFixed(2)} MB</p>
         </div>
       )}
-      {originalImage && !conversionImage && !compressedImage && !croppedImage && (
+      {originalImage && !conversionImage && !compressedImage && !editedImage && (
         <div>
           <button onClick={() => setCropImage(true)}>Recortar imagen</button>
           <button onClick={handleConvertToWebP}>Convertir a WebP</button>
           <button onClick={handleCompress}>Comprimir imagen</button>
         </div>
       )}
-      {croppedImage && (
-        < div className='w-96 h-96'>
-          <img src={croppedImage} alt="Cropped" style={{ maxWidth: '100%' }} />
+      {editedImage && (
+        < div className='max-h-3.5'>
+          <img src={editedImage} alt="Cropped" style={{ maxWidth: '100%' }} />
 
           <div className='flex justify-between'>
-            <button onClick={handleCropButtonClick}>Crop</button>
+            <button onClick={startCrop}>Crop</button>
             <button onClick={handleConvertToWebP}>Convert To WebP</button>
             <button onClick={handleCompress}>Compress</button>
           </div>
@@ -70,7 +94,7 @@ const ImageUpload: React.FC = () => {
           <button onClick={handleDownload}>Descargar imagen comprimida</button>
         </div>
       )}
-      {originalImage && !croppedImage && cropImage && (
+      {originalImage && !editedImage && cropImage && (
         <div className='w-96 h-96'>
           <img
             ref={(node) => {
@@ -87,7 +111,30 @@ const ImageUpload: React.FC = () => {
             alt="Original"
             style={{ maxWidth: '100%' }}
           />
-          <button onClick={handleCrop}>Guardar recorte</button>
+          <button onClick={saveCrop}>Guardar recorte</button>
+        </div>
+      )}
+      <div className="flex items-center space-x-2">
+        <input
+          type="checkbox"
+          checked={scalingMode}
+          onChange={() => setScalingMode((prevMode) => !prevMode)}
+        />
+        <label>Modo de edición de escala, value: {scaleValue}</label>
+      </div>
+      {scalingMode && (
+        <div>
+          <input
+            type="range"
+            min="0.1"
+            max="1"
+            step="0.025"
+            value={scaleValue}
+            onChange={(e) => { handleImageScale(Number(e.target.value)) }}
+          />
+          <button onClick={() => handleImageScale(scaleValue)}>
+            Aplicar escala
+          </button>
         </div>
       )}
     </div>
