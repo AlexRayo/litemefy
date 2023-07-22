@@ -25,3 +25,16 @@ body {
     )
     rgb(var(--background-start-rgb));
 }
+
+.img-container {
+  @apply h-96
+}
+.img-container img{
+  @apply h-full w-auto mx-auto
+}
+.left-tool-box {
+  @apply p-12 flex flex-col 
+}
+.left-tool-box__item {
+  @apply mb-4
+}

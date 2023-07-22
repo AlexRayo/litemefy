@@ -31,7 +31,7 @@ export default function imageUpload() {
       setcompressedFile(null);
       setconvertedFile(null);
       setCompressionPercentage(0);
-      seteditedImageUrlData('');
+      seteditedImageUrlData(URL.createObjectURL(file));
     }
   };
 
@@ -105,9 +105,9 @@ export default function imageUpload() {
 
   //
   const startCrop = () => {
-    if (originalFile && cropperRef.current) {
-      cropperRef.current.replace(URL.createObjectURL(originalFile));
-      seteditedImageUrlData('');
+    if (editedImageUrlData && cropperRef.current) {
+      cropperRef.current.replace(editedImageUrlData);
+      seteditedImageUrlData(editedImageUrlData);
       setcompressedFile(null);
       setconvertedFile(null);
       setCompressionPercentage(0);
