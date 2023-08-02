@@ -2,45 +2,37 @@ import React, { createContext, useState, useRef } from 'react';
 import Cropper from 'cropperjs';
 
 interface AppContextProps {
-  originalFile: File | null;
-  compressedFile: File | null;
-  convertedFile: File | null;
+  originalImage: File | null;
+  compressedImage: File | null;
+  conversionImage: File | null;
   compressionPercentage: number;
-  scaledImageUrlData: string;//save de url data base64 img
   cropImage: boolean;
-  editedImageUrlData: string;
-  pngTransparency: boolean;
+  croppedImage: string | null;
   inputRef: React.RefObject<HTMLInputElement>;
   cropperRef: React.MutableRefObject<Cropper | null>;
-  setoriginalFile: React.Dispatch<React.SetStateAction<File | null>>;
-  setcompressedFile: React.Dispatch<React.SetStateAction<File | null>>;
-  setconvertedFile: React.Dispatch<React.SetStateAction<File | null>>;
+  setOriginalImage: React.Dispatch<React.SetStateAction<File | null>>;
+  setCompressedImage: React.Dispatch<React.SetStateAction<File | null>>;
+  setConversionImage: React.Dispatch<React.SetStateAction<File | null>>;
   setCompressionPercentage: React.Dispatch<React.SetStateAction<number>>;
-  setscaledImageUrlData: React.Dispatch<React.SetStateAction<string>>;
   setCropImage: React.Dispatch<React.SetStateAction<boolean>>;
-  seteditedImageUrlData: React.Dispatch<React.SetStateAction<string>>;
-  setPngTransparency: React.Dispatch<React.SetStateAction<boolean>>;
+  setCroppedImage: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
 export const AppContext = createContext<AppContextProps>({
-  originalFile: null,
-  compressedFile: null,
-  convertedFile: null,
+  originalImage: null,
+  compressedImage: null,
+  conversionImage: null,
   compressionPercentage: 0,
-  scaledImageUrlData: '',
   cropImage: false,
-  editedImageUrlData: '',
-  pngTransparency: false,
+  croppedImage: null,
   inputRef: {} as React.RefObject<HTMLInputElement>,
   cropperRef: {} as React.RefObject<Cropper>,
-  setoriginalFile: () => { },
-  setcompressedFile: () => { },
-  setconvertedFile: () => { },
+  setOriginalImage: () => { },
+  setCompressedImage: () => { },
+  setConversionImage: () => { },
   setCompressionPercentage: () => { },
-  setscaledImageUrlData: () => { },
   setCropImage: () => { },
-  seteditedImageUrlData: () => { },
-  setPngTransparency: () => { },
+  setCroppedImage: () => { },
 });
 
 interface AppProviderProps {
@@ -48,39 +40,33 @@ interface AppProviderProps {
 }
 
 export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
-  const [originalFile, setoriginalFile] = useState<File | null>(null);
-  const [compressedFile, setcompressedFile] = useState<File | null>(null);
-  const [convertedFile, setconvertedFile] = useState<File | null>(null);
+  const [originalImage, setOriginalImage] = useState<File | null>(null);
+  const [compressedImage, setCompressedImage] = useState<File | null>(null);
+  const [conversionImage, setConversionImage] = useState<File | null>(null);
   const [compressionPercentage, setCompressionPercentage] = useState<number>(0);
 
-  const [scaledImageUrlData, setscaledImageUrlData] = useState('');
   const [cropImage, setCropImage] = useState(false);
-  const [pngTransparency, setPngTransparency] = useState(false);
-  const [editedImageUrlData, seteditedImageUrlData] = useState<string>('');
+  const [croppedImage, setCroppedImage] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
   const cropperRef = useRef<Cropper | null>(null);
 
   return (
     <AppContext.Provider
       value={{
-        originalFile,
-        compressedFile,
-        convertedFile,
+        originalImage,
+        compressedImage,
+        conversionImage,
         compressionPercentage,
-        scaledImageUrlData,
         cropImage,
-        editedImageUrlData,
-        pngTransparency,
+        croppedImage,
         inputRef,
         cropperRef,
-        setoriginalFile,
-        setcompressedFile,
-        setconvertedFile,
+        setOriginalImage,
+        setCompressedImage,
+        setConversionImage,
         setCompressionPercentage,
-        setscaledImageUrlData,
         setCropImage,
-        seteditedImageUrlData,
-        setPngTransparency,
+        setCroppedImage,
       }}
     >
       {children}
