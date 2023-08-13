@@ -39,7 +39,7 @@ const ImageUpload: React.FC = () => {
       )}
       {conversionImage && (
         <div className=''>
-          <p>Peso actual: {Number(conversionImage.size / 1024)} KB</p>
+          <p>Peso actual: {(Number(conversionImage.size / 1024).toFixed(2))} KB</p>
         </div>
       )}
       {compressedImage && (
@@ -50,41 +50,50 @@ const ImageUpload: React.FC = () => {
         </div>
       )}
       {originalImage && (
-        < div className='mt-10 w-96'>
+        < div className={`mt-10 w-96`}>
           <div className='flex justify-between'>
-            <button onClick={() => setCropImage(true)}>Crop</button>
-            {cropImage && (<button className='mt-1' onClick={handleCrop}>Guardar recorte</button>)}
+            {
+              !cropImage && (
+                <button onClick={() => setCropImage(true)}>Crop</button>
+              )
+            }
+            {
+              cropImage && (<button className='mt-1' onClick={handleCrop}>Guardar recorte</button>)
+            }
             <button onClick={handleConvertToWebP}>Convert To WebP</button>
             <button onClick={handleCompress}>Compress</button>
             <button onClick={handleDownload}>Descargar</button>
           </div>
           {
-            croppedImage ?
-              <img src={croppedImage} alt="Cropped" />
+            //SHOW THE IMAGE ONCE IS EDITED OR WHEN FIRST LOAD
+            croppedImage && !cropImage ?
+              <img className={`${cropImage ? 'hidden' : 'block'}`} src={croppedImage} alt="Cropped" />
               :
-              <img src={URL.createObjectURL(originalImage)} alt="Original image" />
+              <img className={`${cropImage ? 'hidden' : 'block'}`} src={URL.createObjectURL(originalImage)} alt="Original image" />
           }
         </div>
       )}
-      {cropImage && (
-        <div className='w-96 h-96'>
-          <img
-            ref={(node) => {
-              if (node) {
-                cropperRef.current = new Cropper(node, {
-                  aspectRatio: 0,
-                  viewMode: 0,
-                  zoomable: false, // Desactivar opción de hacer zoom
-                });
+      {
+        //ENTER TO EDIT MODE
+        cropImage && originalImage && (
+          <div className='w-96 h-96'>
+            <img
+              ref={(node) => {
+                if (node) {
+                  cropperRef.current = new Cropper(node, {
+                    aspectRatio: 0,
+                    viewMode: 0,
+                    zoomable: false, // Desactivar opción de hacer zoom
+                  });
 
-              }
-            }}
-            src={croppedImage ? croppedImage : URL.createObjectURL(originalImage)}
-            alt="Original"
-            style={{ maxWidth: '100%' }}
-          />
-        </div>
-      )}
+                }
+              }}
+              src={croppedImage ? croppedImage : URL.createObjectURL(originalImage)}
+              alt="Original"
+              style={{ maxWidth: '100%' }}
+            />
+          </div>
+        )}
     </div>
   );
 };
