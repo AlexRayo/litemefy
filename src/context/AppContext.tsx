@@ -7,7 +7,7 @@ interface AppContextProps {
   conversionImage: File | null;
   compressionPercentage: number;
   cropImage: boolean;
-  croppedImage: string | null;
+  loadedImage: string | undefined;
   inputRef: React.RefObject<HTMLInputElement>;
   cropperRef: React.MutableRefObject<Cropper | null>;
   setOriginalImage: React.Dispatch<React.SetStateAction<File | null>>;
@@ -15,7 +15,7 @@ interface AppContextProps {
   setConversionImage: React.Dispatch<React.SetStateAction<File | null>>;
   setCompressionPercentage: React.Dispatch<React.SetStateAction<number>>;
   setCropImage: React.Dispatch<React.SetStateAction<boolean>>;
-  setCroppedImage: React.Dispatch<React.SetStateAction<string | null>>;
+  setLoadedImage: React.Dispatch<React.SetStateAction<string | undefined>>;
 }
 
 export const AppContext = createContext<AppContextProps>({
@@ -24,7 +24,7 @@ export const AppContext = createContext<AppContextProps>({
   conversionImage: null,
   compressionPercentage: 0,
   cropImage: false,
-  croppedImage: null,
+  loadedImage: undefined,
   inputRef: {} as React.RefObject<HTMLInputElement>,
   cropperRef: {} as React.RefObject<Cropper>,
   setOriginalImage: () => { },
@@ -32,7 +32,7 @@ export const AppContext = createContext<AppContextProps>({
   setConversionImage: () => { },
   setCompressionPercentage: () => { },
   setCropImage: () => { },
-  setCroppedImage: () => { },
+  setLoadedImage: () => { },
 });
 
 interface AppProviderProps {
@@ -46,7 +46,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   const [compressionPercentage, setCompressionPercentage] = useState<number>(0);
 
   const [cropImage, setCropImage] = useState(false);
-  const [croppedImage, setCroppedImage] = useState<string | null>(null);
+  const [loadedImage, setLoadedImage] = useState<string | undefined>(undefined);
   const inputRef = useRef<HTMLInputElement | null>(null);
   const cropperRef = useRef<Cropper | null>(null);
 
@@ -58,7 +58,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
         conversionImage,
         compressionPercentage,
         cropImage,
-        croppedImage,
+        loadedImage,
         inputRef,
         cropperRef,
         setOriginalImage,
@@ -66,7 +66,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
         setConversionImage,
         setCompressionPercentage,
         setCropImage,
-        setCroppedImage,
+        setLoadedImage,
       }}
     >
       {children}

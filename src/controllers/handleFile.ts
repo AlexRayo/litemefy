@@ -7,13 +7,13 @@ export default function imageUpload() {
     originalImage,
     compressedImage,
     conversionImage,
-    croppedImage,
+    loadedImage,
     cropperRef,
     setOriginalImage,
     setCompressedImage,
     setConversionImage,
     setCompressionPercentage,
-    setCroppedImage,
+    setLoadedImage,
     setCropImage
   } = React.useContext(AppContext);
 
@@ -32,7 +32,7 @@ export default function imageUpload() {
       setCompressedImage(null);
       setConversionImage(null);
       setCompressionPercentage(0);
-      setCroppedImage(null);
+      setLoadedImage(URL.createObjectURL(file));
     }
   };
 
@@ -47,8 +47,8 @@ export default function imageUpload() {
         if (imageToCompress) {
           let croppedFile = imageToCompress;
 
-          if (croppedImage) {
-            croppedFile = await convertDataUrlToFile(croppedImage, imageToCompress.type, originalImage);
+          if (loadedImage) {
+            croppedFile = await convertDataUrlToFile(loadedImage, imageToCompress.type, originalImage);
           }
 
           //get compressed image
@@ -83,7 +83,7 @@ export default function imageUpload() {
   // const handleCropButtonClick = () => {
   //   if (originalImage && cropperRef.current) {
   //     cropperRef.current.replace(URL.createObjectURL(originalImage));
-  //     setCroppedImage(null);
+  //     setLoadedImage(null);
   //     setCompressedImage(null);
   //     setConversionImage(null);
   //     setCompressionPercentage(0);
@@ -95,7 +95,7 @@ export default function imageUpload() {
     setCropImage(false)
     if (cropperRef.current) {
       const croppedCanvas = cropperRef.current.getCroppedCanvas();
-      setCroppedImage(croppedCanvas.toDataURL());
+      setLoadedImage(croppedCanvas.toDataURL());
     }
   };
 

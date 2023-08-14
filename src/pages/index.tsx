@@ -13,7 +13,7 @@ const ImageUpload: React.FC = () => {
     conversionImage,
     compressionPercentage,
     cropImage,
-    croppedImage,
+    loadedImage,
     inputRef,
     cropperRef,
     setCropImage,
@@ -44,12 +44,12 @@ const ImageUpload: React.FC = () => {
       )}
       {compressedImage && (
         <div className='mt-10'>
-          <p>Peso comprimido de la imagen: {(compressedImage.size / 1024 / 1024).toFixed(2)} MB</p>
+          <p>Peso comprimido de la imagen: {(compressedImage.size / 1024).toFixed(2)} KB</p>
           <p>Porcentaje de reducción de peso: {Math.round(compressionPercentage)}%</p>
 
         </div>
       )}
-      {originalImage && (
+      {loadedImage && (
         < div className={`mt-10 w-96`}>
           <div className='flex justify-between'>
             {
@@ -66,16 +66,16 @@ const ImageUpload: React.FC = () => {
           </div>
           {
             //SHOW THE IMAGE ONCE IS EDITED OR WHEN FIRST LOAD
-            croppedImage && !cropImage ?
-              <img className={`${cropImage ? 'hidden' : 'block'}`} src={croppedImage} alt="Cropped" />
+            loadedImage && !cropImage ?
+              <img className={`${cropImage ? 'hidden' : 'block'}`} src={loadedImage} alt="Cropped" />
               :
-              <img className={`${cropImage ? 'hidden' : 'block'}`} src={URL.createObjectURL(originalImage)} alt="Original image" />
+              null
           }
         </div>
       )}
       {
-        //ENTER TO EDIT MODE
-        cropImage && originalImage && (
+        //CROP EDIT MODE
+        cropImage && (
           <div className='w-96 h-96'>
             <img
               ref={(node) => {
@@ -88,7 +88,7 @@ const ImageUpload: React.FC = () => {
 
                 }
               }}
-              src={croppedImage ? croppedImage : URL.createObjectURL(originalImage)}
+              src={loadedImage}
               alt="Original"
               style={{ maxWidth: '100%' }}
             />
