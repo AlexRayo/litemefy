@@ -24,7 +24,7 @@ export default function imageUpload() {
     calculateReductionPercentage
   } = Process();
 
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
 
     if (file instanceof File) {
@@ -80,17 +80,6 @@ export default function imageUpload() {
   };
 
   //
-  // const handleCropButtonClick = () => {
-  //   if (originalImage && cropperRef.current) {
-  //     cropperRef.current.replace(URL.createObjectURL(originalImage));
-  //     setLoadedImage(null);
-  //     setCompressedImage(null);
-  //     setConversionImage(null);
-  //     setCompressionPercentage(0);
-  //   }
-  // };
-
-  //
   const handleCrop = () => {
     setCropImage(false)
     if (cropperRef.current) {
@@ -101,16 +90,22 @@ export default function imageUpload() {
 
   //
   const handleDownload = () => {
-    if (compressedImage) {
-      const downloadLink = document.createElement('a');
-      downloadLink.href = URL.createObjectURL(compressedImage);
-      downloadLink.download = `compressed_${compressedImage.name}`;
+    const downloadLink = document.createElement('a');
+    const download = (image: File) => {
+      downloadLink.href = URL.createObjectURL(image);
+      downloadLink.download = `compressed_${image.name}`;
       downloadLink.click();
+    }
+    if (compressedImage) {
+      download(compressedImage)
+    }
+    else if (conversionImage) {
+      download(conversionImage)
     }
   };
 
   return {
-    handleFileChange,
+    handleImageChange,
     handleCompress,
     handleConvertToWebP,
     //handleCropButtonClick,
