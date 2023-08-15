@@ -1,9 +1,10 @@
 import React from 'react';
-import Image from 'next/image';
 import { FaCrop, FaBolt, FaCompress, FaDownload, FaCheck } from "react-icons/fa";
 import { AppContext } from '@/context/AppContext';
 import 'cropperjs/dist/cropper.css';
-import HandleFile from '../controllers/handleImage';
+import imageController from '../controllers/handleImage';
+
+import CropImage from '../components/CropImage';
 import Status from '@/components/Status';
 
 import Button from './misc/Button';
@@ -22,7 +23,7 @@ export default function HandleImage() {
     handleConvertToWebP,
     handleCrop,
     handleDownload,
-  } = HandleFile();
+  } = imageController();
 
   return (
     <div className="">
@@ -41,7 +42,8 @@ export default function HandleImage() {
                   <Button
                     text='Crop'
                     icon={FaCrop}
-                    onClick={() => setCropImage(true)} />
+                    onClick={() => setCropImage(true)}
+                  />
                 )
               }
               {
@@ -68,18 +70,17 @@ export default function HandleImage() {
                 onClick={handleDownload} />
 
             </div>
-            {
-              //SHOW THE IMAGE ONCE IS EDITED OR WHEN FIRST LOAD
-              loadedImage && !cropImage ?
-                <Image
-                  src={loadedImage} alt="Cropped"
-                  className={`${cropImage ? 'hidden' : 'block'}`}
-                  height={1000}
-                  width={2000}
-                />
-                :
-                null
-            }
+            <div className="flex justify-center bg-slate-100 h-96">
+              {
+                //SHOW THE IMAGE ONCE IS EDITED OR WHEN FIRST LOAD
+                loadedImage && !cropImage && (
+                  <img
+                    src={loadedImage} alt="Cropped"
+                    className={`${cropImage ? 'hidden' : 'block'} h-full`}
+                  />)
+              }
+              <CropImage />
+            </div>
           </div>
         )}
     </div>

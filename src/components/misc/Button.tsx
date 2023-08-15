@@ -8,6 +8,7 @@ type PropsTypes = {
   target?: "_self" | "_blank"
   style?: any
   icon: IconType
+  disabled?: boolean
   onClick: () => void
 }
 
@@ -16,24 +17,26 @@ function Button({
   text,
   style,
   icon: Icon,
+  disabled,
   onClick }: PropsTypes) {
 
   return (
     <button
       className={`
       py-2 px-4 
-      rounded 
-      bg-primary 
-      border 
-      border-slate-900 
-      hover:bg-opacity-90 
-      hover:border-opacity-5
+      rounded
+      
       gap-2
       flex
       items-center
       justify-center
+      border   
+      transition-colors duration-300   
+      ${disabled ? ' text-slate-300 border-slate-300' : 'border-slate-900 hover:text-slate-300 hover:bg-slate-800 hover:cursor-pointer'}
+      
       ${type === 'compressed' ? '' : 'flex-wrap'} 
       ${style}`}
+      disabled={disabled}
       onClick={onClick}
     >
       <Icon />

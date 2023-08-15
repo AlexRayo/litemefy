@@ -12,7 +12,7 @@ export default function CropImage() {
 
   return (
     cropImage && loadedImage && (
-      <div className='w-96 h-96'>
+      <div className='w-full'>
         <img
           ref={(node) => {
             if (node) {
@@ -26,7 +26,7 @@ export default function CropImage() {
           }}
           src={loadedImage}
           alt="Original"
-          style={{ maxWidth: '100%' }}
+          style={{ width: '100%' }}
         />
       </div>
     )

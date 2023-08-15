@@ -1,8 +1,13 @@
+import React from 'react';
 import readAndCompressImage from 'browser-image-compression';
 import getExtensionType from '../utils/getExtension';
 import checkPNGTransparency from '../utils/checkPNGTransparency';
+import { AppContext } from '@/context/AppContext';
 
 export default function Process() {
+  const {
+    setLoadedImage
+  } = React.useContext(AppContext)
 
   const compressImage = async (file: File) => {
     const hasTransparency = await checkPNGTransparency(file);
@@ -56,6 +61,7 @@ export default function Process() {
                   type: 'image/webp',
                   lastModified: Date.now(),
                 });
+                setLoadedImage(URL.createObjectURL(convertedFile));
                 resolve(convertedFile);
               } else {
                 reject(new Error('Error al generar el blob convertido.'));
@@ -73,10 +79,10 @@ export default function Process() {
     });
   };
 
-  const convertDataUrlToFile = async (dataUrl: string, fileType: string, originalImage: File | null) => {
+  const convertDataUrlToFile = async (dataUrl: string, fileType: string) => {
     const response = await fetch(dataUrl);
     const blob = await response.blob();
-    return new File([blob], `cropped_${originalImage?.name}`, { type: fileType });
+    return new File([blob], `litemefy`, { type: fileType });
   };
 
 

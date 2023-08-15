@@ -40,38 +40,61 @@ export default function imageUpload() {
   //user can compress image when is loaded or converted to webp
   //originalImage || conversionImage, can contain a file type
   const handleCompress = async () => {
-    if (originalImage || conversionImage) {
-      try {
-        const imageToCompress = conversionImage || originalImage;
 
-        if (imageToCompress) {
-          let croppedFile = imageToCompress;
+    //if (originalImage || conversionImage) {
+    try {
 
-          if (loadedImage) {
-            croppedFile = await convertDataUrlToFile(loadedImage, imageToCompress.type, originalImage);
-          }
+      let _compressImg = null;
 
-          //get compressed image
-          const compressedFile = await compressImage(croppedFile);
-          setCompressedImage(compressedFile);
-
-          const reductionPercentage = calculateReductionPercentage(
-            croppedFile.size,
-            compressedFile.size
-          );
-          setCompressionPercentage(reductionPercentage);
+      if (loadedImage && originalImage) {
+        let _imageExtension = originalImage.type
+        if (conversionImage) {
+          _imageExtension = 'image/webp'
         }
-      } catch (error) {
-        console.error('Error al comprimir la imagen:', error);
+        _compressImg = await convertDataUrlToFile(loadedImage, _imageExtension);
+
+        console.log('_compressImg', _compressImg)
+        console.log('_imageExtension', _imageExtension)
+      }
+
+
+      if (_compressImg) {
+        //get compressed image
+        const compressedFile = await compressImage(_compressImg);
+        setCompressedImage(compressedFile);
+
+        const reductionPercentage = calculateReductionPercentage(
+          _compressImg.size,
+          compressedFile.size
+        );
+        setCompressionPercentage(reductionPercentage);
+      }
+
+    } catch (error) {
+      console.error('Error al comprimir la imagen:', error);
+    }
+    //}
+  };
+
+  const getImageExtension = (): string => {
+    let _imageExtension = ''
+    if (loadedImage && originalImage) {
+      _imageExtension = originalImage.type;
+      if (conversionImage) {
+        _imageExtension = '.webp'
       }
     }
-  };
+    return _imageExtension
+  }
 
   //
   const handleConvertToWebP = async () => {
-    if (originalImage) {
+    if (loadedImage) {
       try {
-        const convertedFile = await convertToWebP(originalImage);
+        const ext = getImageExtension()
+        const _convertToFile = await convertDataUrlToFile(loadedImage, ext)
+
+        const convertedFile = await convertToWebP(_convertToFile);
         setConversionImage(convertedFile);
       } catch (error) {
         console.error('Error al convertir la imagen a WebP:', error);
