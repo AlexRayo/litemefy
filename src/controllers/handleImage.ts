@@ -24,8 +24,6 @@ export default function imageUpload() {
     calculateReductionPercentage
   } = Process();
 
-  const [cancelCrop, setCancelCrop] = React.useState(false);
-
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
 
@@ -42,8 +40,6 @@ export default function imageUpload() {
   //user can compress image when is loaded or converted to webp
   //originalImage || conversionImage, can contain a file type
   const handleCompress = async () => {
-
-    //if (originalImage || conversionImage) {
     try {
 
       let _compressImg = null;
@@ -75,7 +71,6 @@ export default function imageUpload() {
     } catch (error) {
       console.error('Error al comprimir la imagen:', error);
     }
-    //}
   };
 
   const getImageExtension = (): string => {
@@ -107,7 +102,7 @@ export default function imageUpload() {
   //
   const handleCrop = () => {
     setCropImage(false)
-    if (cropperRef.current) {
+    if (cropperRef.current?.getCroppedCanvas()) {
       const croppedCanvas = cropperRef.current.getCroppedCanvas();
       setLoadedImage(croppedCanvas.toDataURL());
     }
@@ -133,9 +128,7 @@ export default function imageUpload() {
     handleImageChange,
     handleCompress,
     handleConvertToWebP,
-    //handleCropButtonClick,
     handleCrop,
-    cancelCrop, setCancelCrop,
     handleDownload
   }
 }

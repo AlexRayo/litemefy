@@ -50,8 +50,6 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const cropperRef = useRef<Cropper | null>(null);
 
-  console.log('cropperRef', cropperRef)
-
   return (
     <AppContext.Provider
       value={{

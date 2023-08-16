@@ -22,7 +22,6 @@ export default function HandleImage() {
     handleCompress,
     handleConvertToWebP,
     handleCrop,
-    cancelCrop, setCancelCrop,
     handleDownload,
   } = imageController();
 
@@ -43,7 +42,7 @@ export default function HandleImage() {
                   <Button
                     text='Crop'
                     icon={FaCrop}
-                    onClick={() => { setCancelCrop(false); setCropImage(true) }}
+                    onClick={() => { setCropImage(true) }}
                   />
                 )
               }
@@ -57,10 +56,7 @@ export default function HandleImage() {
                     <Button
                       text='Cancel'
                       icon={FaBan}
-                      onClick={() => {
-                        setCancelCrop(true)
-                        setCropImage(false)
-                      }} />
+                      onClick={() => setCropImage(false)} />
                   </div>
 
                 )
@@ -93,9 +89,7 @@ export default function HandleImage() {
                     className={`${cropImage ? 'hidden' : 'block'} h-full`}
                   />)
               }
-              <CropImage
-                cancelCrop={cancelCrop}
-              />
+              <CropImage />
             </div>
           </div>
         )}
