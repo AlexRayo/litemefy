@@ -1,5 +1,5 @@
 import React from 'react';
-import { FaCrop, FaBolt, FaCompress, FaDownload, FaCheck } from "react-icons/fa";
+import { FaCrop, FaBolt, FaCompress, FaDownload, FaCheck, FaBan } from "react-icons/fa";
 import { AppContext } from '@/context/AppContext';
 import 'cropperjs/dist/cropper.css';
 import imageController from '../controllers/handleImage';
@@ -22,6 +22,7 @@ export default function HandleImage() {
     handleCompress,
     handleConvertToWebP,
     handleCrop,
+    cancelCrop, setCancelCrop,
     handleDownload,
   } = imageController();
 
@@ -42,31 +43,44 @@ export default function HandleImage() {
                   <Button
                     text='Crop'
                     icon={FaCrop}
-                    onClick={() => setCropImage(true)}
+                    onClick={() => { setCancelCrop(false); setCropImage(true) }}
                   />
                 )
               }
               {
                 cropImage && (
-                  <Button
-                    text='Set Crop'
-                    icon={FaCheck}
-                    onClick={handleCrop} />
+                  <div className="flex gap-2">
+                    <Button
+                      text='Set Crop'
+                      icon={FaCheck}
+                      onClick={handleCrop} />
+                    <Button
+                      text='Cancel'
+                      icon={FaBan}
+                      onClick={() => {
+                        setCancelCrop(true)
+                        setCropImage(false)
+                      }} />
+                  </div>
+
                 )
               }
               <Button
                 text='WebP'
                 icon={FaBolt}
+                disabled={cropImage ? true : false}
                 onClick={handleConvertToWebP} />
 
               <Button
                 text='Compress'
                 icon={FaCompress}
+                disabled={cropImage ? true : false}
                 onClick={handleCompress} />
 
               <Button
                 text='Download'
                 icon={FaDownload}
+                disabled={cropImage ? true : false}
                 onClick={handleDownload} />
 
             </div>
@@ -79,7 +93,9 @@ export default function HandleImage() {
                     className={`${cropImage ? 'hidden' : 'block'} h-full`}
                   />)
               }
-              <CropImage />
+              <CropImage
+                cancelCrop={cancelCrop}
+              />
             </div>
           </div>
         )}

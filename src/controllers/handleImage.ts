@@ -24,6 +24,8 @@ export default function imageUpload() {
     calculateReductionPercentage
   } = Process();
 
+  const [cancelCrop, setCancelCrop] = React.useState(false);
+
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
 
@@ -133,6 +135,7 @@ export default function imageUpload() {
     handleConvertToWebP,
     //handleCropButtonClick,
     handleCrop,
+    cancelCrop, setCancelCrop,
     handleDownload
   }
 }

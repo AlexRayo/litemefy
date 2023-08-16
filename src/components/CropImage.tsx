@@ -3,7 +3,11 @@ import { AppContext } from '@/context/AppContext';
 import Cropper from 'cropperjs';
 import 'cropperjs/dist/cropper.css';
 
-export default function CropImage() {
+type propTypes = {
+  cancelCrop: boolean
+}
+
+export default function CropImage({ cancelCrop }: propTypes) {
   const {
     cropImage,
     cropperRef,
@@ -20,6 +24,11 @@ export default function CropImage() {
                 aspectRatio: 0,
                 viewMode: 0,
                 zoomable: false, // Desactivar opción de hacer zoom
+                ready() {
+                  if (cancelCrop) {
+                    cropperRef.current?.destroy()
+                  }
+                },
               });
 
             }
