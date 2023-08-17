@@ -7,7 +7,7 @@ interface AppContextProps {
   conversionImage: File | null;
   compressionPercentage: number;
   cropImage: boolean;
-  loadedImage: string | undefined;
+  loadedImage: File | undefined;
   inputRef: React.RefObject<HTMLInputElement>;
   cropperRef: React.MutableRefObject<Cropper | null>;
   setOriginalImage: React.Dispatch<React.SetStateAction<File | null>>;
@@ -15,7 +15,7 @@ interface AppContextProps {
   setConversionImage: React.Dispatch<React.SetStateAction<File | null>>;
   setCompressionPercentage: React.Dispatch<React.SetStateAction<number>>;
   setCropImage: React.Dispatch<React.SetStateAction<boolean>>;
-  setLoadedImage: React.Dispatch<React.SetStateAction<string | undefined>>;
+  setLoadedImage: React.Dispatch<React.SetStateAction<File | undefined>>;
 }
 
 export const AppContext = createContext<AppContextProps>({
@@ -46,7 +46,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   const [compressionPercentage, setCompressionPercentage] = useState<number>(0);
 
   const [cropImage, setCropImage] = useState(false);
-  const [loadedImage, setLoadedImage] = useState<string | undefined>(undefined);
+  const [loadedImage, setLoadedImage] = useState<File | undefined>(undefined);
   const inputRef = useRef<HTMLInputElement | null>(null);
   const cropperRef = useRef<Cropper | null>(null);
 

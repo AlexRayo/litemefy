@@ -1,6 +1,9 @@
+import readAndCompressImage from 'browser-image-compression';
 import React from 'react';
 import { AppContext } from '../context/AppContext';
-import Process from '@/functions/process';
+import Process from './process';
+import getExtensionType from '@/utils/getExtension';
+import checkPNGTransparency from '@/utils/checkPNGTransparency';
 
 export default function imageUpload() {
   const {
@@ -18,10 +21,7 @@ export default function imageUpload() {
   } = React.useContext(AppContext);
 
   const {
-    compressImage,
     convertToWebP,
-    convertDataUrlToFile,
-    calculateReductionPercentage
   } = Process();
 
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -32,81 +32,76 @@ export default function imageUpload() {
       setCompressedImage(null);
       setConversionImage(null);
       setCompressionPercentage(0);
-      setLoadedImage(URL.createObjectURL(file));
+      setLoadedImage(file);
     }
   };
 
-
-  //user can compress image when is loaded or converted to webp
-  //originalImage || conversionImage, can contain a file type
   const handleCompress = async () => {
-    try {
+    if (loadedImage && originalImage) {
+      const hasTransparency = await checkPNGTransparency(loadedImage);
+      //if png suggested initialQuality: 0.05. When flat images cold be 0.2
+      //if jpeg suggested initialQuality: 0.8
+      const options = {
+        initialQuality: hasTransparency ? 0.5 : 0.8,
+        maxSizeMB: 5,
+        maxWidthOrHeight: 1920,
+        fileType: getExtensionType(loadedImage.name), // get the file type from the file name
+        onProgress: (progress: number) => {
+          console.log(`Progreso de compresión: ${progress * 100}%`);
+        },
+      };
 
-      let _compressImg = null;
-
-      if (loadedImage && originalImage) {
-        let _imageExtension = originalImage.type
-        if (conversionImage) {
-          _imageExtension = 'image/webp'
-        }
-        _compressImg = await convertDataUrlToFile(loadedImage, _imageExtension);
-
-        console.log('_compressImg', _compressImg)
-        console.log('_imageExtension', _imageExtension)
-      }
-
-
-      if (_compressImg) {
-        //get compressed image
-        const compressedFile = await compressImage(_compressImg);
+      readAndCompressImage(loadedImage, options).then((compressedFile) => {
         setCompressedImage(compressedFile);
 
-        const reductionPercentage = calculateReductionPercentage(
-          _compressImg.size,
-          compressedFile.size
-        );
-        setCompressionPercentage(reductionPercentage);
-      }
-
-    } catch (error) {
-      console.error('Error al comprimir la imagen:', error);
+      }).catch((error) => {
+      });
     }
   };
-
-  const getImageExtension = (): string => {
-    let _imageExtension = ''
-    if (loadedImage && originalImage) {
-      _imageExtension = originalImage.type;
-      if (conversionImage) {
-        _imageExtension = '.webp'
-      }
-    }
-    return _imageExtension
-  }
 
   //
   const handleConvertToWebP = async () => {
     if (loadedImage) {
       try {
-        const ext = getImageExtension()
-        const _convertToFile = await convertDataUrlToFile(loadedImage, ext)
-
-        const convertedFile = await convertToWebP(_convertToFile);
+        const convertedFile = await convertToWebP(loadedImage);
         setConversionImage(convertedFile);
       } catch (error) {
         console.error('Error al convertir la imagen a WebP:', error);
       }
     }
   };
-
   //
-  const handleCrop = () => {
-    setCropImage(false)
-    if (cropperRef.current?.getCroppedCanvas()) {
-      const croppedCanvas = cropperRef.current.getCroppedCanvas();
-      setLoadedImage(croppedCanvas.toDataURL());
+  const handleCrop = async () => {
+    setCropImage(false);
+    if (loadedImage) {
+      const extType: string = getExtensionType((loadedImage.name));
+      console.log('extType', extType)
+
+      if (cropperRef.current?.getCroppedCanvas()) {
+        let croppedCanvas = cropperRef.current.getCroppedCanvas();
+
+        croppedCanvas.toBlob(function (blob) {
+          if (blob) {
+            const file = new File([blob], '', { type: extType });
+            console.log('new cropped file name', file)
+
+
+            setLoadedImage(file);
+          } else {
+            console.error('Blob could not be created');
+          }
+        }, extType);
+      }
     }
   };
+
+  React.useEffect(() => {
+    handleCompress();
+    return () => {
+    }
+  }, [loadedImage])
+
+
 
   //
   const handleDownload = () => {

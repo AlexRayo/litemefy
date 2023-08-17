@@ -19,17 +19,14 @@ export default function CropImage() {
               cropperRef.current = new Cropper(node, {
                 aspectRatio: 0,
                 viewMode: 0,
-                zoomable: false, // Desactivar opción de hacer zoom
-                ready() {
-                  if (!cropImage) {
-                    cropperRef.current?.reset()
-                  }
-                },
+                rotatable: true,
+                zoomable: false,
+                autoCrop: false,
               });
 
             }
           }}
-          src={loadedImage}
+          src={URL.createObjectURL(loadedImage)}
           alt="Original"
           style={{ width: '100%' }}
         />

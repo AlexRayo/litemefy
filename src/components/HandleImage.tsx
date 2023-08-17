@@ -1,5 +1,5 @@
 import React from 'react';
-import { FaCrop, FaBolt, FaCompress, FaDownload, FaCheck, FaBan } from "react-icons/fa";
+import { FaPen, FaUndo, FaRedo, FaArrowsAltH, FaArrowsAltV, FaBolt, FaCompress, FaDownload, FaCheck, FaBan } from "react-icons/fa";
 import { AppContext } from '@/context/AppContext';
 import 'cropperjs/dist/cropper.css';
 import imageController from '../controllers/handleImage';
@@ -13,8 +13,10 @@ export default function HandleImage() {
   const {
     inputRef,
     cropImage,
+    cropperRef,
     loadedImage,
     setCropImage,
+    conversionImage,
   } = React.useContext(AppContext);
 
   const {
@@ -36,56 +38,83 @@ export default function HandleImage() {
       {
         loadedImage && (
           < div className={``}>
-            <div className='flex justify-between'>
+            <div className='flex justify-between my-2'>
               {
                 !cropImage && (
                   <Button
-                    text='Crop'
-                    icon={FaCrop}
+                    text='Edit'
+                    icon={FaPen}
                     onClick={() => { setCropImage(true) }}
                   />
                 )
               }
               {
                 cropImage && (
-                  <div className="flex gap-2">
-                    <Button
-                      text='Set Crop'
-                      icon={FaCheck}
-                      onClick={handleCrop} />
-                    <Button
-                      text='Cancel'
-                      icon={FaBan}
-                      onClick={() => setCropImage(false)} />
+                  <div className="flex justify-between w-full">
+
+                    <div className="flex gap-2">
+                      <Button
+                        text=''
+                        icon={FaUndo}
+                        onClick={() => { cropperRef.current?.rotate(-90); }} />
+                      <Button
+                        text=''
+                        icon={FaRedo}
+                        onClick={() => { cropperRef.current?.rotate(90); }} />
+                      <Button
+                        text=''
+                        icon={FaArrowsAltH}
+                        onClick={() => { cropperRef.current?.scaleX(-cropperRef.current?.getData().scaleX || -1); }} />
+                      <Button
+                        text=''
+                        icon={FaArrowsAltV}
+                        style
+                        onClick={() => { cropperRef.current?.scaleY(-cropperRef.current?.getData().scaleY || -1); }} />
+                      <Button
+                        text=''
+                        icon={FaRedo}
+                        onClick={() => { cropperRef.current?.scale(0.5, 0.5); }} />
+                    </div>
+
+                    <div className="flex gap-2">
+                      <Button
+                        text=''
+                        icon={FaCheck}
+                        onClick={handleCrop} />
+                      <Button
+                        text=''
+                        icon={FaBan}
+                        onClick={() => { cropperRef.current?.destroy(); setCropImage(false) }} />
+                    </div>
                   </div>
 
                 )
               }
-              <Button
+              {!conversionImage && (<Button
                 text='WebP'
                 icon={FaBolt}
-                disabled={cropImage ? true : false}
-                onClick={handleConvertToWebP} />
+                style={`${cropImage ? 'hidden' : ''}`}
+                onClick={handleConvertToWebP} />)}
 
-              <Button
+              {/* <Button
                 text='Compress'
                 icon={FaCompress}
-                disabled={cropImage ? true : false}
-                onClick={handleCompress} />
+                style={`${cropImage ? 'hidden' : ''}`}
+                onClick={handleCompress} /> */}
 
               <Button
                 text='Download'
                 icon={FaDownload}
-                disabled={cropImage ? true : false}
+                style={`${cropImage ? 'hidden' : ''}`}
                 onClick={handleDownload} />
 
             </div>
-            <div className="flex justify-center bg-slate-100 h-96">
+            <div className="flex justify-center bg-slate-100 h-96 overflow-hidden">
               {
                 //SHOW THE IMAGE ONCE IS EDITED OR WHEN FIRST LOAD
                 loadedImage && !cropImage && (
                   <img
-                    src={loadedImage} alt="Cropped"
+                    src={URL.createObjectURL(loadedImage)} alt="Cropped"
                     className={`${cropImage ? 'hidden' : 'block'} h-full`}
                   />)
               }

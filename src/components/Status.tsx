@@ -7,7 +7,6 @@ export default function Status() {
     originalImage,
     compressedImage,
     conversionImage,
-    compressionPercentage,
   } = React.useContext(AppContext);
 
   let _originalWeight = '';
@@ -29,14 +28,8 @@ export default function Status() {
       )
       }
 
-      {conversionImage && (
-        <div className=''>
-          <p>WebP: {(Number(conversionImage.size / 1024).toFixed(0))} KB</p>
-        </div>
-      )}
-
       {compressedImage && (
-        <p>Compressed: {(compressedImage.size / 1024).toFixed(0)} KB ({Math.round(compressionPercentage)}%)</p>
+        <p>New: {(compressedImage.size / 1024).toFixed(0)} KB</p>
       )}
 
     </div>
