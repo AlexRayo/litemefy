@@ -73,18 +73,21 @@ export default function imageUpload() {
   //
   const handleCrop = async () => {
     setCropImage(false);
+
     if (loadedImage) {
-      const extType: string = getExtensionType((loadedImage.name));
-      console.log('extType', extType)
+      const extType: string = getExtensionType(loadedImage.name);
+      console.log('extType', extType);
 
       if (cropperRef.current?.getCroppedCanvas()) {
         let croppedCanvas = cropperRef.current.getCroppedCanvas();
 
         croppedCanvas.toBlob(function (blob) {
           if (blob) {
-            const file = new File([blob], '', { type: extType });
-            console.log('new cropped file name', file)
+            // Crear un nuevo nombre de archivo con la extensión correcta
+            const newFileName = loadedImage.name.replace(/\.[^.]+$/, `.${extType.split('/')[1]}`);
 
+            // Crear un nuevo objeto File con el Blob y el nuevo nombre
+            const file = new File([blob], newFileName, { type: extType });
 
             setLoadedImage(file);
           } else {
@@ -94,6 +97,7 @@ export default function imageUpload() {
       }
     }
   };
+
 
   React.useEffect(() => {
     handleCompress();

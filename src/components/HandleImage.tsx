@@ -21,7 +21,6 @@ export default function HandleImage() {
 
   const {
     handleImageChange,
-    handleCompress,
     handleConvertToWebP,
     handleCrop,
     handleDownload,
@@ -95,12 +94,6 @@ export default function HandleImage() {
                 icon={FaBolt}
                 style={`${cropImage ? 'hidden' : ''}`}
                 onClick={handleConvertToWebP} />)}
-
-              {/* <Button
-                text='Compress'
-                icon={FaCompress}
-                style={`${cropImage ? 'hidden' : ''}`}
-                onClick={handleCompress} /> */}
 
               <Button
                 text='Download'
