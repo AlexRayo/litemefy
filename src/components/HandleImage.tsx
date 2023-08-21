@@ -9,9 +9,6 @@ import Status from '@/components/Status';
 
 import Button from './misc/Button';
 
-let _horizontalScale = 0;
-let _verticalScale = 0;
-
 export default function HandleImage() {
   const {
     inputRef,
@@ -31,32 +28,37 @@ export default function HandleImage() {
 
   const flipHorizontal = React.useRef(true)
   const flipVertical = React.useRef(true)
+  const scale = React.useRef(1)
+  const flip = React.useRef({ x: scale.current, y: scale.current })
 
   const [sliderValue, setSliderValue] = React.useState(1);
-  //const [flipHorizontal, setFlipHorizontal] = React.useState(true)
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const value = parseFloat(event.target.value);
     setSliderValue(value);
-    // const _HORizontalSCALE = -cropperRef.current?.getData().scaleX
-    // console.log('_HORizontalSCALE', _HORizontalSCALE)
-    //
     cropperRef.current?.scale(value, value);
-
   };
 
-  // React.useEffect(() => {
-  //   console.log('flipHorizontal', flipHorizontal)
-  //   //console.log('horizontalScale.current ', horizontalScale.current)
-  //   if (flipHorizontal) {
-  //     cropperRef.current?.scale(1, 1);
-  //   }
-  //   else {
-  //     cropperRef.current?.scale(-1, 1);
-  //   }
-  //   return () => {
-  //   }
-  // }, [flipHorizontal])
+  React.useEffect(() => {
+    if (flipHorizontal.current) {
+      cropperRef.current?.scale(flip.current.x, flip.current.y)
+    }
+    else {
+      cropperRef.current?.scale(flip.current.x, flip.current.y)
+    };
+
+    if (flipVertical.current) {
+      cropperRef.current?.scale(flip.current.x, flip.current.y)
+    }
+    else {
+      cropperRef.current?.scale(flip.current.x, flip.current.y)
+    }
+
+    return () => {
+
+    }
+  }, [cropImage])
+
 
   return (
     <div className="">
@@ -96,8 +98,14 @@ export default function HandleImage() {
                         text=''
                         icon={FaArrowsAltH}
                         onClick={() => {
-                          flipHorizontal.current ? cropperRef.current?.scale(-1, 1)
-                            : cropperRef.current?.scale(1, 1)
+                          if (flipHorizontal.current) {
+                            cropperRef.current?.scale(flip.current.x * -1, flip.current.y)
+                            flip.current.x = scale.current * -1;
+                          }
+                          else {
+                            cropperRef.current?.scale(scale.current, flip.current.y)
+                            flip.current.x = scale.current;
+                          }
                           flipHorizontal.current = !flipHorizontal.current
                         }} />
                       <Button
@@ -105,10 +113,15 @@ export default function HandleImage() {
                         icon={FaArrowsAltV}
                         style
                         onClick={() => {
-                          console.log(flipHorizontal.current)
-                          flipHorizontal.current ? cropperRef.current?.scale(1, -1)
-                            : cropperRef.current?.scale(1, 1)
-                          flipHorizontal.current = !flipHorizontal.current
+                          if (flipVertical.current) {
+                            cropperRef.current?.scale(flip.current.x, flip.current.y * -1)
+                            flip.current.y = scale.current * -1;
+                          }
+                          else {
+                            cropperRef.current?.scale(flip.current.x, scale.current)
+                            flip.current.y = scale.current;
+                          }
+                          flipVertical.current = !flipVertical.current
                         }} />
 
                       <div className="">
