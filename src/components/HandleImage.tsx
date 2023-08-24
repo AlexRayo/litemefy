@@ -26,39 +26,18 @@ export default function HandleImage() {
     handleDownload,
   } = imageController();
 
-  const flipHorizontal = React.useRef(true)
-  const flipVertical = React.useRef(true)
+
   const scale = React.useRef(1)
   const flip = React.useRef({ x: scale.current, y: scale.current })
 
   const [sliderValue, setSliderValue] = React.useState(1);
 
+
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const value = parseFloat(event.target.value);
-    setSliderValue(value);
-    cropperRef.current?.scale(value, value);
+    scale.current = value
+    cropperRef.current?.scale(scale.current, scale.current);
   };
-
-  React.useEffect(() => {
-    if (flipHorizontal.current) {
-      cropperRef.current?.scale(flip.current.x, flip.current.y)
-    }
-    else {
-      cropperRef.current?.scale(flip.current.x, flip.current.y)
-    };
-
-    if (flipVertical.current) {
-      cropperRef.current?.scale(flip.current.x, flip.current.y)
-    }
-    else {
-      cropperRef.current?.scale(flip.current.x, flip.current.y)
-    }
-
-    return () => {
-
-    }
-  }, [cropImage])
-
 
   return (
     <div className="">
@@ -98,30 +77,18 @@ export default function HandleImage() {
                         text=''
                         icon={FaArrowsAltH}
                         onClick={() => {
-                          if (flipHorizontal.current) {
-                            cropperRef.current?.scale(flip.current.x * -1, flip.current.y)
-                            flip.current.x = scale.current * -1;
-                          }
-                          else {
-                            cropperRef.current?.scale(scale.current, flip.current.y)
-                            flip.current.x = scale.current;
-                          }
-                          flipHorizontal.current = !flipHorizontal.current
+                          console.log('flip.current.x', flip.current.x)
+                          cropperRef.current?.scale(flip.current.x * -1, flip.current.y)
+                          flip.current.x = flip.current.x * -1
                         }} />
                       <Button
                         text=''
                         icon={FaArrowsAltV}
                         style
                         onClick={() => {
-                          if (flipVertical.current) {
-                            cropperRef.current?.scale(flip.current.x, flip.current.y * -1)
-                            flip.current.y = scale.current * -1;
-                          }
-                          else {
-                            cropperRef.current?.scale(flip.current.x, scale.current)
-                            flip.current.y = scale.current;
-                          }
-                          flipVertical.current = !flipVertical.current
+                          console.log('flip.current.y', flip.current.y)
+                          cropperRef.current?.scale(flip.current.x, flip.current.y * -1)
+                          flip.current.y = flip.current.y * -1
                         }} />
 
                       <div className="">
@@ -134,7 +101,7 @@ export default function HandleImage() {
                           value={sliderValue}
                           onChange={handleChange}
                         />
-                        <span className='mx-auto block text-center'>Scale: {sliderValue * 100}%</span>
+                        <span className='mx-auto block text-center'>Scale: {scale.current * 100}%</span>
                       </div>
 
                     </div>
