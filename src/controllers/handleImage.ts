@@ -5,7 +5,7 @@ import Process from './process';
 import getExtensionType from '@/utils/getExtension';
 import checkPNGTransparency from '@/utils/checkPNGTransparency';
 
-export default function imageUpload() {
+export default function ImageUpload() {
   const {
     originalImage,
     compressedImage,
