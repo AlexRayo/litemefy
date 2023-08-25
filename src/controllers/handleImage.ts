@@ -1,5 +1,5 @@
+import React, { useContext, useEffect } from 'react';
 import readAndCompressImage from 'browser-image-compression';
-import React from 'react';
 import { AppContext } from '../context/AppContext';
 import Process from './process';
 import getExtensionType from '@/utils/getExtension';
@@ -18,7 +18,7 @@ export default function imageUpload() {
     setCompressionPercentage,
     setLoadedImage,
     setCropImage
-  } = React.useContext(AppContext);
+  } = useContext(AppContext);
 
   const {
     convertToWebP,
@@ -114,7 +114,7 @@ export default function imageUpload() {
   };
 
 
-  React.useEffect(() => {
+  useEffect(() => {
     handleCompress();
     return () => {
     }
