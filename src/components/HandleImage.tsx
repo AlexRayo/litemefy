@@ -8,6 +8,7 @@ import CropImage from '../components/CropImage';
 import Status from '@/components/Status';
 
 import Button from './misc/Button';
+import RangeSlider from './misc/RangeSlider';
 
 export default function HandleImage() {
   const {
@@ -27,17 +28,32 @@ export default function HandleImage() {
   } = imageController();
 
 
-  const scale = React.useRef(1)
-  const flip = React.useRef({ x: scale.current, y: scale.current })
-
-  const [sliderValue, setSliderValue] = React.useState(1);
 
 
-  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const value = parseFloat(event.target.value);
-    scale.current = value
-    cropperRef.current?.scale(scale.current, scale.current);
-  };
+  // const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+  //   const value = parseFloat(event.target.value);
+  //   setSliderValue(value)
+  //   //setSliderValue(value);
+  //   if (cropperRef.current) {
+  //     const x = cropperRef.current.getData().scaleX * value
+  //     const y = cropperRef.current?.getData().scaleY * value
+  //     cropperRef.current?.scale(x, y);
+  //   }
+
+
+  // };
+  // React.useEffect(() => {
+  //   if (cropperRef.current) {
+  //     const x = cropperRef.current.getData().scaleX * sliderValue
+  //     const y = cropperRef.current?.getData().scaleY * sliderValue
+  //     cropperRef.current?.scale(x, y);
+  //   }
+
+  //   return () => {
+
+  //   }
+  // }, [sliderValue])
+
 
   return (
     <div className="">
@@ -77,32 +93,19 @@ export default function HandleImage() {
                         text=''
                         icon={FaArrowsAltH}
                         onClick={() => {
-                          console.log('flip.current.x', flip.current.x)
-                          cropperRef.current?.scale(flip.current.x * -1, flip.current.y)
-                          flip.current.x = flip.current.x * -1
+                          cropperRef.current?.scale(cropperRef.current?.getData().scaleX * -1, cropperRef.current?.getData().scaleY)
                         }} />
                       <Button
                         text=''
                         icon={FaArrowsAltV}
                         style
                         onClick={() => {
-                          console.log('flip.current.y', flip.current.y)
-                          cropperRef.current?.scale(flip.current.x, flip.current.y * -1)
-                          flip.current.y = flip.current.y * -1
+                          cropperRef.current?.scale(cropperRef.current?.getData().scaleX, cropperRef.current?.getData().scaleY * -1)
                         }} />
 
-                      <div className="">
-                        <input
-                          type="range"
-                          className="appearance-none w-full h-3 bg-gray-200 rounded-md outline-none focus:ring focus:ring-blue-300"
-                          max={1}
-                          min={0.1}
-                          step={0.1}
-                          value={sliderValue}
-                          onChange={handleChange}
-                        />
-                        <span className='mx-auto block text-center'>Scale: {scale.current * 100}%</span>
-                      </div>
+                      <RangeSlider
+                        cropperRef={cropperRef}
+                      />
 
                     </div>
 
