@@ -1,7 +1,7 @@
 import React, { ChangeEvent } from 'react'
 
 type PropsType = {
-  cropperRef: any
+  cropperRef: React.MutableRefObject<Cropper | null>
 }
 
 export default function RangeSlider({ cropperRef }: PropsType) {

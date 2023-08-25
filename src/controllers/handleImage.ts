@@ -24,17 +24,32 @@ export default function imageUpload() {
     convertToWebP,
   } = Process();
 
+  const handleImageDrop = async (event: React.DragEvent<HTMLInputElement>) => {
+    event.preventDefault();
+    const file = event.dataTransfer.files?.[0];
+    if (file && file.type.includes('image')) {
+      setImage(file)
+    }
+  };
+  const handleDragOver = (event: React.DragEvent<HTMLInputElement>) => {
+    event.preventDefault();
+  };
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
 
     if (file instanceof File) {
-      setOriginalImage(file);
-      setCompressedImage(null);
-      setConversionImage(null);
-      setCompressionPercentage(0);
-      setLoadedImage(file);
+      setImage(file)
     }
   };
+
+  const setImage = (file: File) => {
+    setOriginalImage(file);
+    setCompressedImage(null);
+    setConversionImage(null);
+    setCompressionPercentage(0);
+    setLoadedImage(file);
+  }
+
 
   const handleCompress = async () => {
     if (loadedImage && originalImage) {
@@ -124,7 +139,9 @@ export default function imageUpload() {
   };
 
   return {
+    handleImageDrop,
     handleImageChange,
+    handleDragOver,
     handleCompress,
     handleConvertToWebP,
     handleCrop,
