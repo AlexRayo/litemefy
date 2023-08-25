@@ -1,4 +1,4 @@
-import React, { ChangeEvent } from 'react';
+import React from 'react';
 import { FaPen, FaUndo, FaRedo, FaArrowsAltH, FaArrowsAltV, FaBolt, FaCompress, FaDownload, FaCheck, FaBan } from "react-icons/fa";
 import { AppContext } from '@/context/AppContext';
 import 'cropperjs/dist/cropper.css';
@@ -26,34 +26,6 @@ export default function HandleImage() {
     handleCrop,
     handleDownload,
   } = imageController();
-
-
-
-
-  // const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-  //   const value = parseFloat(event.target.value);
-  //   setSliderValue(value)
-  //   //setSliderValue(value);
-  //   if (cropperRef.current) {
-  //     const x = cropperRef.current.getData().scaleX * value
-  //     const y = cropperRef.current?.getData().scaleY * value
-  //     cropperRef.current?.scale(x, y);
-  //   }
-
-
-  // };
-  // React.useEffect(() => {
-  //   if (cropperRef.current) {
-  //     const x = cropperRef.current.getData().scaleX * sliderValue
-  //     const y = cropperRef.current?.getData().scaleY * sliderValue
-  //     cropperRef.current?.scale(x, y);
-  //   }
-
-  //   return () => {
-
-  //   }
-  // }, [sliderValue])
-
 
   return (
     <div className="">
