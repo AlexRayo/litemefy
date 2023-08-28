@@ -24,10 +24,12 @@ export default function ImageUpload() {
     convertToWebP,
   } = Process();
 
+  const [imagePreviewUrl, setImagePreviewUrl] = React.useState<string | null>(null);
+
   const handleImageDrop = async (event: React.DragEvent<HTMLInputElement>) => {
     event.preventDefault();
     const file = event.dataTransfer.files?.[0];
-    if (file && file.type.includes('image')) {
+    if (file) {
       setImage(file)
     }
   };
@@ -36,18 +38,22 @@ export default function ImageUpload() {
   };
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-
-    if (file instanceof File) {
+    if (file) {
       setImage(file)
     }
   };
 
   const setImage = (file: File) => {
-    setOriginalImage(file);
-    setCompressedImage(null);
-    setConversionImage(null);
-    setCompressionPercentage(0);
-    setLoadedImage(file);
+    if (file.type.includes('image')) {
+      setOriginalImage(file);
+      setCompressedImage(null);
+      setConversionImage(null);
+      setCompressionPercentage(0);
+      setLoadedImage(file);
+    } else {
+      alert('File must be an image')
+      return
+    }
   }
 
 
@@ -115,7 +121,9 @@ export default function ImageUpload() {
 
 
   useEffect(() => {
-    handleCompress();
+    if (loadedImage) {
+      handleCompress();
+    }
     return () => {
     }
   }, [loadedImage])

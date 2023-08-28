@@ -36,12 +36,12 @@ export default function HandleImage() {
   };
 
   return (
-    <div className="h-96 w-full">
+    <div className="w-full p-2 md:p4 xl:p-0">
 
       {
         !loadedImage ?
           <div
-            className="h-full w-full bg-pink-300 flex items-center justify-center text-center"
+            className="h-96 w-full bg-slate-100 rounded-xl flex items-center justify-center text-center"
             onDrop={handleImageDrop}
             onDragOver={handleDragOver}
             onClick={handleClick}
@@ -53,7 +53,7 @@ export default function HandleImage() {
                 type="file"
                 onChange={handleImageChange}
               />
-              <p>or drop a file</p>
+              <p className='mt-4 text-2xl'>Drop or select an image</p>
             </div>
           </div>
           :
@@ -69,76 +69,90 @@ export default function HandleImage() {
                           text='Edit'
                           icon={FaPen}
                           onClick={() => { setCropImage(true) }}
+                          style={'h-12'}
                         />
                       )
                     }
                     {
                       cropImage && (
                         <div className="flex justify-between w-full">
-
-                          <div className="flex gap-2">
-                            <Button
-                              text=''
-                              icon={FaUndo}
-                              onClick={() => { cropperRef.current?.rotate(-90); }} />
-                            <Button
-                              text=''
-                              icon={FaRedo}
-                              onClick={() => { cropperRef.current?.rotate(90); }} />
-                            <Button
-                              text=''
-                              icon={FaArrowsAltH}
-                              onClick={() => {
-                                cropperRef.current?.scale(cropperRef.current?.getData().scaleX * -1, cropperRef.current?.getData().scaleY)
-                              }} />
-                            <Button
-                              text=''
-                              icon={FaArrowsAltV}
-                              style
-                              onClick={() => {
-                                cropperRef.current?.scale(cropperRef.current?.getData().scaleX, cropperRef.current?.getData().scaleY * -1)
-                              }} />
-
+                          <div className="xl:flex gap-3">
+                            <div className="flex gap-2">
+                              <Button
+                                text=''
+                                icon={FaUndo}
+                                onClick={() => { cropperRef.current?.rotate(-90); }}
+                                style={'w-12 h-12 rounded-full'}
+                              />
+                              <Button
+                                text=''
+                                icon={FaRedo}
+                                onClick={() => { cropperRef.current?.rotate(90); }}
+                                style={'w-12 h-12 rounded-full'}
+                              />
+                              <Button
+                                text=''
+                                icon={FaArrowsAltH}
+                                onClick={() => {
+                                  cropperRef.current?.scale(cropperRef.current?.getData().scaleX * -1, cropperRef.current?.getData().scaleY)
+                                }}
+                                style={'w-12 h-12 rounded-full'}
+                              />
+                              <Button
+                                text=''
+                                icon={FaArrowsAltV}
+                                onClick={() => {
+                                  cropperRef.current?.scale(cropperRef.current?.getData().scaleX, cropperRef.current?.getData().scaleY * -1)
+                                }}
+                                style={'w-12 h-12 rounded-full'}
+                              />
+                            </div>
                             <RangeSlider
                               cropperRef={cropperRef}
                             />
-
                           </div>
 
                           <div className="flex gap-2">
                             <Button
                               text=''
                               icon={FaCheck}
-                              onClick={handleCrop} />
+                              onClick={handleCrop}
+                              style={'w-12 h-12 rounded-full mb-2'}
+                            />
                             <Button
                               text=''
                               icon={FaBan}
-                              onClick={() => { cropperRef.current?.destroy(); setCropImage(false) }} />
+                              onClick={() => { cropperRef.current?.destroy(); setCropImage(false) }}
+                              style={'w-12 h-12 rounded-full'}
+                            />
                           </div>
                         </div>
 
                       )
                     }
-                    {!conversionImage && (<Button
-                      text='WebP'
-                      icon={FaBolt}
-                      style={`${cropImage ? 'hidden' : ''}`}
-                      onClick={handleConvertToWebP} />)}
+                    <div className="flex gap-2">
+                      {!conversionImage && (<Button
+                        text='WebP'
+                        icon={FaBolt}
+                        style={`${cropImage ? 'hidden' : 'h-12'}`}
+                        onClick={handleConvertToWebP}
+                      />)}
 
-                    <Button
-                      text='Download'
-                      icon={FaDownload}
-                      style={`${cropImage ? 'hidden' : ''}`}
-                      onClick={handleDownload} />
+                      <Button
+                        text={'Download'}
+                        icon={FaDownload}
+                        style={`${cropImage ? 'hidden' : 'h-12'}`}
+                        onClick={handleDownload} />
+                    </div>
 
                   </div>
-                  <div className="flex justify-center bg-slate-100 h-96 overflow-hidden">
+                  <div className="flex justify-center bg-slate-100 rounded overflow-hidden shadow-2xl">
                     {
                       //SHOW THE IMAGE ONCE IS EDITED OR WHEN FIRST LOAD
                       loadedImage && !cropImage && (
                         <img
                           src={URL.createObjectURL(loadedImage)} alt="Cropped"
-                          className={`${cropImage ? 'hidden' : 'block'} h-full`}
+                          className={`${cropImage ? 'hidden' : 'block'} h-auto w-full`}
                         />)
                     }
                     <CropImage />

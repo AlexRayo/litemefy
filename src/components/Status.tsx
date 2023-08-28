@@ -24,12 +24,18 @@ export default function Status() {
     <div className="mt-2 flex justify-between">
 
       {originalImage && (
-        <p>Original: {_originalWeight}</p>
+        <div className="flex">
+          <p className=''>Original: </p>
+          <p className="ml-1 font-bold">{_originalWeight}</p>
+        </div>
       )
       }
 
       {compressedImage && (
-        <p>New: {(compressedImage.size / 1024).toFixed(0)} KB</p>
+        <div className="flex">
+          <p>New: </p>
+          <p className="ml-1 font-bold">{(compressedImage.size / 1024).toFixed(0)} KB</p>
+        </div>
       )}
 
     </div>

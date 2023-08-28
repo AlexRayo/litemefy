@@ -20,7 +20,8 @@ export default function RangeSlider({ cropperRef }: PropsType) {
   }
 
   return (
-    <div className="">
+    <div className="mt-2 xl:mt-0">
+      <span className='mx-auto block text-center text-xs font-thin'>Scale: {sliderValue * 100}%</span>
       <input
         type="range"
         className="appearance-none w-full h-3 bg-gray-200 rounded-md outline-none focus:ring focus:ring-blue-300"
@@ -30,7 +31,6 @@ export default function RangeSlider({ cropperRef }: PropsType) {
         value={sliderValue}
         onChange={handleChange}
       />
-      <span className='mx-auto block text-center'>Scale: {sliderValue * 100}%</span>
     </div>
   )
 }

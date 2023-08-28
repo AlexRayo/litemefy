@@ -25,14 +25,15 @@ function Button({
       className={`
       py-2 px-4 
       rounded
+      text-slate-300
+      bg-slate-800
       
       gap-2
       flex
       items-center
       justify-center
-      border   
       transition-colors duration-300   
-      ${disabled ? ' text-slate-300 border-slate-300' : 'border-slate-900 hover:text-slate-300 hover:bg-slate-800 hover:cursor-pointer'}
+      ${disabled ? ' text-slate-300 border-slate-300' : 'border-slate-900 hover:text-slate-300 hover:bg-slate-600 hover:cursor-pointer'}
       
       ${type === 'compressed' ? '' : 'flex-wrap'} 
       ${style}`}
