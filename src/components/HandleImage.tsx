@@ -1,5 +1,16 @@
 import React from 'react';
-import { FaPen, FaUndo, FaRedo, FaArrowsAltH, FaArrowsAltV, FaBolt, FaCompress, FaDownload, FaCheck, FaBan } from "react-icons/fa";
+import {
+  FaFile,
+  FaPen,
+  FaUndo,
+  FaRedo,
+  FaArrowsAltH,
+  FaArrowsAltV,
+  FaBolt,
+  FaDownload,
+  FaCheck,
+  FaBan
+} from "react-icons/fa";
 import { AppContext } from '@/context/AppContext';
 import 'cropperjs/dist/cropper.css';
 import imageController from '../controllers/handleImage';
@@ -29,7 +40,7 @@ export default function HandleImage() {
     handleDownload,
   } = imageController();
 
-  const handleClick = () => {
+  const changeImage = () => {
     if (inputRef.current) {
       inputRef.current.click();
     }
@@ -38,21 +49,22 @@ export default function HandleImage() {
   return (
     <div className="w-full p-2 md:p4 xl:p-0">
 
+      <input
+        ref={inputRef}
+        type="file"
+        onChange={handleImageChange}
+        className='hidden'
+      />
+
       {
         !loadedImage ?
           <div
             className="h-96 w-full bg-slate-100 rounded-xl flex items-center justify-center text-center"
             onDrop={handleImageDrop}
             onDragOver={handleDragOver}
-            onClick={handleClick}
+            onClick={changeImage}
           >
             <div className="">
-              <input
-                value={'Upload image'}
-                ref={inputRef}
-                type="file"
-                onChange={handleImageChange}
-              />
               <p className='mt-4 text-2xl'>Drop or select an image</p>
             </div>
           </div>
@@ -65,12 +77,20 @@ export default function HandleImage() {
                   <div className='flex justify-between my-2'>
                     {
                       !cropImage && (
-                        <Button
-                          text='Edit'
-                          icon={FaPen}
-                          onClick={() => { setCropImage(true) }}
-                          style={'h-12'}
-                        />
+                        <div className="flex gap-2">
+                          <Button
+                            text=''
+                            icon={FaFile}
+                            onClick={changeImage}
+                            style={'h-12'}
+                          />
+                          <Button
+                            text=''
+                            icon={FaPen}
+                            onClick={() => { setCropImage(true) }}
+                            style={'h-12'}
+                          />
+                        </div>
                       )
                     }
                     {

@@ -60,6 +60,7 @@ export default function ImageUpload() {
   const handleCompress = async () => {
     if (loadedImage && originalImage) {
       const hasTransparency = await checkPNGTransparency(loadedImage);
+      //NOTE, IF IMAGE IS TOO LARGE CONSIDER SCALE IT DOWN A BIT. MORE IMPORTANT IF IT IS PNG
       //if png suggested initialQuality: 0.05. When flat images cold be 0.2
       //if jpeg suggested initialQuality: 0.8
       const options = {
@@ -68,7 +69,7 @@ export default function ImageUpload() {
         maxWidthOrHeight: 1920,
         fileType: getExtensionType(loadedImage.name), // get the file type from the file name
         onProgress: (progress: number) => {
-          console.log(`Progreso de compresión: ${progress * 100}%`);
+          console.log(`Progreso de compresión: ${progress}%`);
         },
       };
 
