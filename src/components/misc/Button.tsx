@@ -27,13 +27,14 @@ function Button({
       rounded
       text-slate-800
       bg-slate-100
+      border
       
       gap-2
       flex
       items-center
       justify-center
       transition-colors duration-300   
-      ${disabled ? ' text-slate-300 border-slate-300' : 'border-slate-900 hover:text-slate-300 hover:bg-slate-600 hover:cursor-pointer'}
+      ${disabled ? ' text-slate-300 border-slate-300' : 'border-slate-600 hover:text-slate-300 hover:bg-slate-600 hover:cursor-pointer'}
       
       ${type === 'compressed' ? '' : 'flex-wrap'} 
       ${style}`}

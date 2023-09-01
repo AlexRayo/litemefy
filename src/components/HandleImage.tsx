@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  FaFileImage,
   FaFile,
   FaPen,
   FaUndo,
@@ -59,12 +60,15 @@ export default function HandleImage() {
       {
         !loadedImage ?
           <div
-            className="h-96 w-full bg-slate-100 rounded-xl flex items-center justify-center text-center"
+            className="h-96 w-full rounded-xl flex items-center justify-center text-center bg-white border-dotted border-4 border-slate-500 shadow-2xl"
             onDrop={handleImageDrop}
             onDragOver={handleDragOver}
             onClick={changeImage}
           >
             <div className="">
+              <FaFileImage
+                className={'mx-auto text-6xl'}
+              />
               <p className='mt-4 text-2xl'>Drop or select an image</p>
             </div>
           </div>
@@ -166,7 +170,7 @@ export default function HandleImage() {
                     </div>
 
                   </div>
-                  <div className="flex justify-center bg-slate-100 rounded overflow-hidden shadow-2xl">
+                  <div className="flex justify-center bg-squares rounded overflow-hidden shadow-2xl">
                     {
                       //SHOW THE IMAGE ONCE IS EDITED OR WHEN FIRST LOAD
                       loadedImage && !cropImage && (
