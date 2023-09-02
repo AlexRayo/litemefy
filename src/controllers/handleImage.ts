@@ -4,6 +4,7 @@ import { AppContext } from '../context/AppContext';
 import Process from './process';
 import getExtensionType from '@/utils/getExtension';
 import checkPNGTransparency from '@/utils/checkPNGTransparency';
+import { resizeImg } from '@/utils/resize-img';
 
 export default function ImageUpload() {
   const {
@@ -23,8 +24,6 @@ export default function ImageUpload() {
   const {
     convertToWebP,
   } = Process();
-
-  const [imagePreviewUrl, setImagePreviewUrl] = React.useState<string | null>(null);
 
   const handleImageDrop = async (event: React.DragEvent<HTMLInputElement>) => {
     event.preventDefault();
@@ -59,25 +58,57 @@ export default function ImageUpload() {
 
   const handleCompress = async () => {
     if (loadedImage && originalImage) {
-      const hasTransparency = await checkPNGTransparency(loadedImage);
-      //NOTE, IF IMAGE IS TOO LARGE CONSIDER SCALE IT DOWN A BIT. MORE IMPORTANT IF IT IS PNG
-      //if png suggested initialQuality: 0.05. When flat images cold be 0.2
-      //if jpeg suggested initialQuality: 0.8
-      const options = {
-        initialQuality: hasTransparency ? 0.5 : 0.8,
-        maxSizeMB: 5,
-        maxWidthOrHeight: 1920,
-        fileType: getExtensionType(loadedImage.name), // get the file type from the file name
-        onProgress: (progress: number) => {
-          console.log(`Progreso de compresión: ${progress}%`);
-        },
+      let compressImage = loadedImage;
+      let imgWidth = 0;
+      const imageElement = new Image();
+      imageElement.src = URL.createObjectURL(compressImage);
+      imageElement.onload = async () => {
+        imgWidth = imageElement.naturalWidth;
+        console.log(`El ancho de la imagen es: ${imgWidth} píxeles`);
+        if (imgWidth > 10920) {
+          try {
+            const scaledImage = await resizeImg(compressImage, 1920);
+            if (scaledImage) {
+              compress(scaledImage)
+              console.log('Imagen escalada:', scaledImage);
+              // Puedes usar scaledImage como desees
+            } else {
+              console.error('Error al escalar la imagen');
+            }
+          } catch (error) {
+            console.error('Error al procesar la imagen:', error);
+          }
+
+        }
+        else {
+          compress(compressImage)
+        }
       };
+      const compress = async (file: File) => {
+        const hasTransparency = await checkPNGTransparency(file);
+        //NOTE, IF IMAGE IS TOO LARGE CONSIDER SCALE IT DOWN A BIT. MORE IMPORTANT IF IT IS PNG
+        //if png suggested initialQuality: 0.05. When flat images cold be 0.2
+        //if jpeg suggested initialQuality: 0.8
+        const options = {
+          initialQuality:
+            hasTransparency && imgWidth > 1920 ? 0.05
+              : hasTransparency && imgWidth <= 1920 ? 0.5
+                : 0.8,
+          maxSizeMB: 5,
+          maxWidthOrHeight: 1920,
+          fileType: getExtensionType(file.name), // get the file type from the file name
+          onProgress: (progress: number) => {
+            console.log(`Progreso de compresión: ${progress}%`);
+          },
+        };
 
-      readAndCompressImage(loadedImage, options).then((compressedFile) => {
-        setCompressedImage(compressedFile);
+        readAndCompressImage(file, options)
+          .then((compressedFile) => {
+            setCompressedImage(compressedFile);
 
-      }).catch((error) => {
-      });
+          }).catch((error) => {
+          });
+      }
     }
   };
 
