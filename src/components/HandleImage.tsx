@@ -74,6 +74,7 @@ export default function HandleImage() {
           </div>
           :
           <>
+            <p className='text-center font-thin'>If you with a lighter image, consider scale it down</p>
             <Status />
             {
               loadedImage && (

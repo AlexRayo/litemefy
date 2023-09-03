@@ -64,19 +64,16 @@ export default function ImageUpload() {
       imageElement.src = URL.createObjectURL(compressImage);
       imageElement.onload = async () => {
         imgWidth = imageElement.naturalWidth;
-        console.log(`El ancho de la imagen es: ${imgWidth} píxeles`);
         if (imgWidth > 10920) {
           try {
             const scaledImage = await resizeImg(compressImage, 1920);
             if (scaledImage) {
               compress(scaledImage)
-              console.log('Imagen escalada:', scaledImage);
-              // Puedes usar scaledImage como desees
             } else {
-              console.error('Error al escalar la imagen');
+              //console.error('resize error');
             }
           } catch (error) {
-            console.error('Error al procesar la imagen:', error);
+            //console.error('try/catch resize image error:', error);
           }
 
         }
@@ -86,19 +83,23 @@ export default function ImageUpload() {
       };
       const compress = async (file: File) => {
         const hasTransparency = await checkPNGTransparency(file);
-        //NOTE, IF IMAGE IS TOO LARGE CONSIDER SCALE IT DOWN A BIT. MORE IMPORTANT IF IT IS PNG
         //if png suggested initialQuality: 0.05. When flat images cold be 0.2
         //if jpeg suggested initialQuality: 0.8
         const options = {
           initialQuality:
-            hasTransparency && imgWidth > 1920 ? 0.05
-              : hasTransparency && imgWidth <= 1920 ? 0.5
-                : 0.8,
+            hasTransparency && imgWidth > 1280 ? 0.05
+              : hasTransparency && imgWidth > 960 ? 0.25
+                : hasTransparency && imgWidth > 0 ? 0.5
+                  //
+                  : !hasTransparency && imgWidth > 1280 ? 0.3
+                    : !hasTransparency && imgWidth > 960 ? 0.5
+                      : 0.8,
+
           maxSizeMB: 5,
           maxWidthOrHeight: 1920,
           fileType: getExtensionType(file.name), // get the file type from the file name
           onProgress: (progress: number) => {
-            console.log(`Progreso de compresión: ${progress}%`);
+            console.log(`Progress compression: ${progress}%`);
           },
         };
 
