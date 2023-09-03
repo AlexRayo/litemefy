@@ -74,7 +74,12 @@ export default function HandleImage() {
           </div>
           :
           <>
-            <p className='text-center font-thin'>If you with a lighter image, consider scale it down</p>
+            <div className='text-center'>
+              <p className="font-thin bg-slate-200 inline-block py-1 px-2 rounded">
+                If you wish a lighter image, consider scale it down
+              </p>
+            </div>
+
             <Status />
             {
               loadedImage && (

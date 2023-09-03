@@ -26,7 +26,7 @@ export default function Status() {
       {originalImage && (
         <div className="flex">
           <p className=''>Original: </p>
-          <p className="ml-1 font-bold">{_originalWeight}</p>
+          <p className="ml-1 font-bold text-teal-400">{_originalWeight}</p>
         </div>
       )
       }
@@ -34,7 +34,7 @@ export default function Status() {
       {compressedImage && (
         <div className="flex">
           <p>New: </p>
-          <p className="ml-1 font-bold">{(compressedImage.size / 1024).toFixed(0)} KB</p>
+          <p className="ml-1 font-bold text-teal-400">{(compressedImage.size / 1024).toFixed(0)} KB</p>
         </div>
       )}
 
