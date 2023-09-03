@@ -30,6 +30,7 @@ export default function HandleImage() {
     loadedImage,
     setCropImage,
     conversionImage,
+    isLoading
   } = React.useContext(AppContext);
 
   const {
@@ -79,6 +80,11 @@ export default function HandleImage() {
                 If you wish a lighter image, consider scale it down
               </p>
             </div>
+            {
+              isLoading && (
+                <span className="loader absolute top-0 xl:top-10"></span>
+              )
+            }
 
             <Status />
             {

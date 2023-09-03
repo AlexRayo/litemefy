@@ -1,6 +1,6 @@
-import React, { ReactNode } from 'react'
+import React from 'react'
 import { IconType } from 'react-icons';
-import { FaCrop, FaEnvelope } from "react-icons/fa";
+import { AppContext } from '@/context/AppContext';
 
 type PropsTypes = {
   type?: "compressed" | "extended" | "default" | undefined
@@ -20,12 +20,13 @@ function Button({
   disabled,
   onClick }: PropsTypes) {
 
+  const { isLoading } = React.useContext(AppContext)
+
   return (
     <button
       className={`
       py-2 px-4 
       rounded
-      text-slate-800
       bg-white
       border
       
@@ -34,11 +35,11 @@ function Button({
       items-center
       justify-center
       transition-colors duration-300   
-      ${disabled ? ' text-slate-300 border-slate-300' : 'border-slate-200 hover:text-slate-300 hover:bg-slate-600 hover:cursor-pointer'}
+      ${isLoading ? ' text-slate-300 border-slate-300' : ' text-slate-800 border-slate-200 hover:text-slate-300 hover:bg-slate-600 hover:cursor-pointer'}
       
       ${type === 'compressed' ? '' : 'flex-wrap'} 
       ${style}`}
-      disabled={disabled}
+      disabled={isLoading}
       onClick={onClick}
     >
       <Icon />

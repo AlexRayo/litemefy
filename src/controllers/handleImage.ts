@@ -18,7 +18,8 @@ export default function ImageUpload() {
     setConversionImage,
     setCompressionPercentage,
     setLoadedImage,
-    setCropImage
+    setCropImage,
+    setIsLoading
   } = useContext(AppContext);
 
   const {
@@ -57,6 +58,7 @@ export default function ImageUpload() {
 
 
   const handleCompress = async () => {
+    setIsLoading(true);
     if (loadedImage && originalImage) {
       let compressImage = loadedImage;
       let imgWidth = 0;
@@ -87,7 +89,7 @@ export default function ImageUpload() {
         //if jpeg suggested initialQuality: 0.8
         const options = {
           initialQuality:
-            hasTransparency && imgWidth > 1280 ? 0.05
+            hasTransparency && imgWidth > 1280 ? 0.035
               : hasTransparency && imgWidth > 960 ? 0.25
                 : hasTransparency && imgWidth > 0 ? 0.5
                   //
@@ -106,8 +108,10 @@ export default function ImageUpload() {
         readAndCompressImage(file, options)
           .then((compressedFile) => {
             setCompressedImage(compressedFile);
+            setIsLoading(false);
 
           }).catch((error) => {
+            setIsLoading(false);
           });
       }
     }
@@ -115,11 +119,14 @@ export default function ImageUpload() {
 
   //
   const handleConvertToWebP = async () => {
+    setIsLoading(true);
     if (loadedImage) {
       try {
         const convertedFile = await convertToWebP(loadedImage);
         setConversionImage(convertedFile);
+        setIsLoading(false);
       } catch (error) {
+        setIsLoading(false);
         console.error('Error al convertir la imagen a WebP:', error);
       }
     }
