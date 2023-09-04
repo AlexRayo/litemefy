@@ -101,7 +101,7 @@ export default function HandleImage() {
                             style={'h-12'}
                           />
                           <Button
-                            text=''
+                            text='Edit'
                             icon={FaPen}
                             onClick={() => { setCropImage(true) }}
                             style={'h-12'}
@@ -175,9 +175,9 @@ export default function HandleImage() {
                       />)}
 
                       <Button
-                        text={'Download'}
+                        text={''}
                         icon={FaDownload}
-                        style={`${cropImage ? 'hidden' : 'h-12'}`}
+                        style={`${cropImage ? 'hidden' : !isLoading ? 'animate-bounce h-12 bg-teal-400' : ''}`}
                         onClick={handleDownload} />
                     </div>
 

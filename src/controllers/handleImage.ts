@@ -175,7 +175,7 @@ export default function ImageUpload() {
     const downloadLink = document.createElement('a');
     const download = (image: File) => {
       downloadLink.href = URL.createObjectURL(image);
-      downloadLink.download = `compressed_${image.name}`;
+      downloadLink.download = `${image.name}`;
       downloadLink.click();
     }
     if (compressedImage) {
