@@ -1,38 +1,50 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Litemefy
 
-## Getting Started
+Litemefy is a web tool that allows you to reduce the size of your images to improve the loading speed of your websites and applications, while also offering other useful image editing features.
 
-First, run the development server:
+## Demo
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-```
+You can see a live demonstration of Litemefy [here](https://litemefy.vercel.app/).
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+![Screenshot](screenshot.png)
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+## Description
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+Litemefy was born to solve common problems when working with images on the web. The application enables you to reduce the size of your images, convert them to the WebP format, and perform other basic edits all in one place. No more need for multiple tools.
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+## Features
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+- Automatically compresses images to improve loading speed.
+- Converts images to the WebP format for better performance.
+- Performs basic edits such as cropping, scale and rotation.
+- Supports PNG images while preserving transparency.
+- Intuitive and user-friendly interface.
 
-## Learn More
+## Usage
 
-To learn more about Next.js, take a look at the following resources:
+Litemefy is easy to use. Upload your images, make necessary edits, and download the optimized version. Here's an example of how to use it:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1. Click on "Upload Image" or drag an image into the upload area.
+2. Make edits if necessary using the provided tools.
+3. Optionally, convert the image to WebP by clicking "WebP".
+4. Download the optimized image by clicking the download button.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+## Development
 
-## Deploy on Vercel
+1. Clone this repository: `git clone https://github.com/yourusername/litemefy.git`
+2. Navigate to the project directory: `cd litemefy`
+3. Install dependencies: `npm install`
+4. Start the application: `npm start`
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Contribution
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+We would love for you to contribute to improving Litemefy! If you'd like to contribute, follow these steps:
+
+1. Fork this repository.
+2. Create a branch for your changes: `git checkout -b my-feature`
+3. Make your changes and ensure they adhere to the style guidelines.
+4. Submit a pull request when you're ready.
+
+## License
+
+This project is licensed under the [MIT License](LICENSE.md). See the [LICENSE.md](LICENSE.md) file for more details.
