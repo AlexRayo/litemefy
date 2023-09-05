@@ -40,6 +40,7 @@ export default function HandleImage() {
     handleConvertToWebP,
     handleCrop,
     handleDownload,
+    imgSize
   } = imageController();
 
   const changeImage = () => {
@@ -79,6 +80,10 @@ export default function HandleImage() {
               <p className="font-thin bg-slate-200 inline-block py-1 px-2 rounded">
                 If you wish a lighter image, consider scale it down
               </p>
+              <div className="">
+                <p className="text-sm">{`${loadedImage.name}`}</p>
+                <p className="">{`${imgSize.width} x ${imgSize.height}`}</p>
+              </div>
             </div>
             {
               isLoading && (

@@ -26,6 +26,8 @@ export default function ImageUpload() {
     convertToWebP,
   } = Process();
 
+  const [imgSize, setImgSize] = React.useState({ width: 0, height: 0 })
+
   const handleImageDrop = async (event: React.DragEvent<HTMLInputElement>) => {
     event.preventDefault();
     const file = event.dataTransfer.files?.[0];
@@ -66,7 +68,8 @@ export default function ImageUpload() {
       imageElement.src = URL.createObjectURL(compressImage);
       imageElement.onload = async () => {
         imgWidth = imageElement.naturalWidth;
-        if (imgWidth > 10920) {
+        setImgSize({ height: imageElement.naturalHeight, width: imageElement.naturalWidth });
+        if (imgWidth > 1920) {
           try {
             const scaledImage = await resizeImg(compressImage, 1920);
             if (scaledImage) {
@@ -193,6 +196,7 @@ export default function ImageUpload() {
     handleCompress,
     handleConvertToWebP,
     handleCrop,
-    handleDownload
+    handleDownload,
+    imgSize
   }
 }
