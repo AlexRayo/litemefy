@@ -1,6 +1,6 @@
 import React from 'react'
 import { IconType } from 'react-icons';
-import { AppContext } from '@/context/AppContext';
+import { AppContext } from '../../context/AppContext';
 
 type PropsTypes = {
   type?: "compressed" | "extended" | "default" | undefined

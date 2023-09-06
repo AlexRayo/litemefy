@@ -1,5 +1,5 @@
 import React from 'react';
-import { AppContext } from '@/context/AppContext';
+import { AppContext } from '../context/AppContext';
 
 export default function Process() {
   const {

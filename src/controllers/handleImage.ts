@@ -2,9 +2,9 @@ import React, { useContext, useEffect } from 'react';
 import readAndCompressImage from 'browser-image-compression';
 import { AppContext } from '../context/AppContext';
 import Process from './process';
-import getExtensionType from '@/utils/getExtension';
-import checkPNGTransparency from '@/utils/checkPNGTransparency';
-import { resizeImg } from '@/utils/resize-img';
+import getExtensionType from '../utils/getExtension';
+import checkPNGTransparency from '../utils/checkPNGTransparency';
+import { resizeImg } from '../utils/resize-img';
 
 export default function ImageUpload() {
   const {

@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-  FaFileImage,
   FaFile,
   FaPen,
   FaUndo,
@@ -12,15 +11,16 @@ import {
   FaCheck,
   FaBan
 } from "react-icons/fa";
-import { AppContext } from '@/context/AppContext';
+import { AppContext } from '../context/AppContext';
 import 'cropperjs/dist/cropper.css';
 import imageController from '../controllers/handleImage';
 
 import CropImage from '../components/CropImage';
-import Status from '@/components/Status';
+import Status from '../components/Status';
 
 import Button from './misc/Button';
 import RangeSlider from './misc/RangeSlider';
+import ImageUpload from './ImageUpload';
 
 export default function HandleImage() {
   const {
@@ -49,6 +49,8 @@ export default function HandleImage() {
     }
   };
 
+  console.log(loadedImage)
+
   return (
     <div className="w-full p-2 md:p4 xl:p-0">
 
@@ -61,19 +63,11 @@ export default function HandleImage() {
 
       {
         !loadedImage ?
-          <div
-            className="h-96 w-full rounded-xl flex items-center justify-center text-center bg-white border-dotted border-4 border-slate-500 shadow-2xl"
-            onDrop={handleImageDrop}
-            onDragOver={handleDragOver}
-            onClick={changeImage}
-          >
-            <div className="">
-              <FaFileImage
-                className={'mx-auto text-6xl'}
-              />
-              <p className='mt-4 text-2xl'>Drop or select an image</p>
-            </div>
-          </div>
+          <ImageUpload
+            handleImageDrop={handleImageDrop}
+            handleDragOver={handleDragOver}
+            changeImage={changeImage}
+          />
           :
           <>
             <div className='text-center'>
