@@ -3,6 +3,7 @@ import Footer from '@/components/Footer';
 
 import HandleImage from '@/components/HandleImage';
 import Head from 'next/head';
+import { Analytics } from '@vercel/analytics/react';
 
 const ImageUpload: React.FC = () => {
 
@@ -13,6 +14,7 @@ const ImageUpload: React.FC = () => {
         <meta name="description" content="This tool allows you to optimize your images for the web; compress, scale, crop and convert to webP, all in a simple and fast interface" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
+      <Analytics />
       <div className="flex flex-col mx-auto justify-center self-center items-center bg-slate-100 min-h-screen">
         <div className="md:w-6/12 lg:w-5/12 relative">
           <div className="mb-4 xl:my-8 px-2 md:px-4 xl:px-0 text-center">
