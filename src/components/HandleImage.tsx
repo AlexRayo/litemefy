@@ -30,7 +30,8 @@ export default function HandleImage() {
     loadedImage,
     setCropImage,
     conversionImage,
-    isLoading
+    isLoading,
+    imgSize
   } = React.useContext(AppContext);
 
   const {
@@ -40,7 +41,6 @@ export default function HandleImage() {
     handleConvertToWebP,
     handleCrop,
     handleDownload,
-    imgSize
   } = imageController();
 
   const changeImage = () => {
@@ -52,7 +52,7 @@ export default function HandleImage() {
   console.log(loadedImage)
 
   return (
-    <div className="w-full p-2 md:p4 xl:p-0">
+    <div className="mx-auto md:w-6/12 lg:w-8/12 p-2 md:p4 xl:p-0">
 
       <input
         ref={inputRef}

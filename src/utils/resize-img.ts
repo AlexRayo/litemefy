@@ -1,3 +1,4 @@
+//NOT IN USE
 export function resizeImg(
   file: File,
   maxWidth: number

@@ -1,10 +1,13 @@
 import React, { ChangeEvent } from 'react'
+import imageController from '../../controllers/handleImage';
+import { AppContext } from '@/context/AppContext';
 
 type PropsType = {
   cropperRef: React.MutableRefObject<Cropper | null>
 }
-
 export default function RangeSlider({ cropperRef }: PropsType) {
+  const { imgSize
+  } = React.useContext(AppContext);
   const [sliderValue, setSliderValue] = React.useState(1)
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -21,7 +24,8 @@ export default function RangeSlider({ cropperRef }: PropsType) {
 
   return (
     <div className="mt-2 xl:mt-0">
-      <span className='mx-auto block text-center text-xs font-thin'>Scale: {sliderValue * 100}%</span>
+      <p className='mx-auto block text-center'>
+        <span className='font-bold'>Scale:</span> {Math.floor(imgSize.width * sliderValue)} x {Math.floor(imgSize.height * sliderValue)}</p>
       <input
         type="range"
         className="appearance-none w-full h-3 bg-gray-200 rounded-md outline-none focus:ring focus:ring-blue-300"
@@ -31,6 +35,8 @@ export default function RangeSlider({ cropperRef }: PropsType) {
         value={sliderValue}
         onChange={handleChange}
       />
+      {/* <p className='mx-auto block text-center'>
+        <span className='font-bold'>Scale:</span> {sliderValue * 100}% </p> */}
     </div>
   )
 }

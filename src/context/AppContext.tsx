@@ -10,14 +10,16 @@ interface AppContextProps {
   loadedImage: File | undefined;
   inputRef: React.RefObject<HTMLInputElement>;
   cropperRef: React.MutableRefObject<Cropper | null>;
-  isLoading: boolean; // Nuevo estado isLoading
+  isLoading: boolean;
+  imgSize: { width: number, height: number }
   setOriginalImage: React.Dispatch<React.SetStateAction<File | null>>;
   setCompressedImage: React.Dispatch<React.SetStateAction<File | null>>;
   setConversionImage: React.Dispatch<React.SetStateAction<File | null>>;
   setCompressionPercentage: React.Dispatch<React.SetStateAction<number>>;
   setCropImage: React.Dispatch<React.SetStateAction<boolean>>;
   setLoadedImage: React.Dispatch<React.SetStateAction<File | undefined>>;
-  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>; // Nuevo estado setIsLoading
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  setImgSize: React.Dispatch<React.SetStateAction<{ width: number, height: number }>>
 }
 
 export const AppContext = createContext<AppContextProps>({
@@ -29,14 +31,16 @@ export const AppContext = createContext<AppContextProps>({
   loadedImage: undefined,
   inputRef: {} as React.RefObject<HTMLInputElement>,
   cropperRef: {} as React.RefObject<Cropper>,
-  isLoading: false, // Nuevo estado isLoading con valor predeterminado false
+  isLoading: false,
+  imgSize: { width: 0, height: 0 },
   setOriginalImage: () => { },
   setCompressedImage: () => { },
   setConversionImage: () => { },
   setCompressionPercentage: () => { },
   setCropImage: () => { },
   setLoadedImage: () => { },
-  setIsLoading: () => { }, // Nuevo estado setIsLoading
+  setIsLoading: () => { },
+  setImgSize: () => { },
 });
 
 interface AppProviderProps {
@@ -48,6 +52,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   const [compressedImage, setCompressedImage] = useState<File | null>(null);
   const [conversionImage, setConversionImage] = useState<File | null>(null);
   const [compressionPercentage, setCompressionPercentage] = useState<number>(0);
+  const [imgSize, setImgSize] = React.useState({ width: 0, height: 0 })
 
   const [cropImage, setCropImage] = useState(false);
   const [loadedImage, setLoadedImage] = useState<File | undefined>(undefined);
@@ -67,14 +72,16 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
         loadedImage,
         inputRef,
         cropperRef,
-        isLoading, // Agregar isLoading al contexto
+        isLoading,
+        imgSize,
         setOriginalImage,
         setCompressedImage,
         setConversionImage,
         setCompressionPercentage,
         setCropImage,
         setLoadedImage,
-        setIsLoading, // Agregar setIsLoading al contexto
+        setIsLoading,
+        setImgSize
       }}
     >
       {children}

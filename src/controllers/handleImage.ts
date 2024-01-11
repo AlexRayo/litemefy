@@ -4,7 +4,6 @@ import { AppContext } from '../context/AppContext';
 import Process from './process';
 import getExtensionType from '../utils/getExtension';
 import checkPNGTransparency from '../utils/checkPNGTransparency';
-import { resizeImg } from '../utils/resize-img';
 
 export default function ImageUpload() {
   const {
@@ -19,14 +18,13 @@ export default function ImageUpload() {
     setCompressionPercentage,
     setLoadedImage,
     setCropImage,
-    setIsLoading
+    setIsLoading,
+    setImgSize
   } = useContext(AppContext);
 
   const {
     convertToWebP,
   } = Process();
-
-  const [imgSize, setImgSize] = React.useState({ width: 0, height: 0 })
 
   const handleImageDrop = async (event: React.DragEvent<HTMLInputElement>) => {
     event.preventDefault();
@@ -58,7 +56,6 @@ export default function ImageUpload() {
     }
   }
 
-
   const handleCompress = async () => {
     setIsLoading(true);
     if (loadedImage && originalImage) {
@@ -69,22 +66,9 @@ export default function ImageUpload() {
       imageElement.onload = async () => {
         imgWidth = imageElement.naturalWidth;
         setImgSize({ height: imageElement.naturalHeight, width: imageElement.naturalWidth });
-        if (imgWidth > 1920) {
-          try {
-            const scaledImage = await resizeImg(compressImage, 1920);
-            if (scaledImage) {
-              compress(scaledImage)
-            } else {
-              //console.error('resize error');
-            }
-          } catch (error) {
-            //console.error('try/catch resize image error:', error);
-          }
 
-        }
-        else {
-          compress(compressImage)
-        }
+        compress(compressImage)
+
       };
       const compress = async (file: File) => {
         const hasTransparency = await checkPNGTransparency(file);
@@ -197,6 +181,5 @@ export default function ImageUpload() {
     handleConvertToWebP,
     handleCrop,
     handleDownload,
-    imgSize
   }
 }
